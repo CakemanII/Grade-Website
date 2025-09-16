@@ -1,0 +1,54 @@
+// Sort on max point impact
+                    case "impact":
+                        const weight_cat_length = {};
+                        for (let w in weights) {
+                            weight_cat_length[w] = 0;
+                        }
+                        for (let g of grades) {
+                            if (weight_cat_length[g.weight_cat] != null) {
+                                if (Calculate.isNumeric(g.max) && Calculate.isNumeric(g.min)) {
+                                    weight_cat_length[g.weight_cat] += 1;
+                                }
+                            }
+                        }
+
+                        grades.sort((a, b) => {
+                            const a_is_num = Calculate.isNumeric(a.max);
+                            const b_is_num = Calculate.isNumeric(b.max);
+                            const a_weight_val = weights[a.weight_cat];
+                            const b_weight_val = weights[b.weight_cat];
+
+                            for (let x of [null, ""]) {
+                                if (a_weight_val != x && b_weight_val == x) { return 1 * multiplier; }
+                                if (a_weight_val == x && b_weight_val != x) { return -1 * multiplier; }
+                            }
+                            if (a_is_num && !b_is_num) { return 1 * multiplier; }
+                            if (!a_is_num && b_is_num) { return -1 * multiplier; }
+
+                            if (a_is_num && b_is_num) {
+                                //weight value % * (max points / weight assignments length)
+                                const a_analysis = parseFloat(a_weight_val) * (parseFloat(a.max) / weight_cat_length[a.weight_cat]);
+                                const b_analysis = parseFloat(b_weight_val) * (parseFloat(b.max) / weight_cat_length[b.weight_cat]);
+
+                                if (a_analysis < b_analysis) { return -1 * multiplier; }
+                                if (a_analysis > b_analysis) { return 1 * multiplier; }
+                            }
+                            return 0;
+                        });
+                        break;
+
+
+
+
+------------------------------------------------------------------------------------
+<h3 style="font-size: 1.5em; margin-bottom: 5px; margin-top: 60px;"><u>Sorting by Impact:</u></h3>
+            <p style="margin-top: 0px; margin-bottom: 5px;">Sorting by impact will help you understand the <u>extent of the impact assignments will make</u> on your overall grade.</p>
+            <p style="margin-top: 0px;">Assignments with no maximum points (purely extra credit) are assigned no impact.</p>
+            <p style="margin-top: 0px;">NOTE: Everytime you change something, it may change the level of impact overall. (You would have to sort for impact again.)</p>
+            <p style="margin-bottom: 5px;">'Impact ▲' sorts from most impact to least impact (most on top).</p>
+            <p style="margin-top: 0px;">'Impact ▼' sorts from least impact to most impact (least on top).</p>
+
+------------------------------------------------------------------------------------------
+                    <button state="desc" class="sort-btn" id="sort-impact" onclick="GradesUI.execute_sort_grades(event, this)">Impact <span>▲</span></button>  
+                    <button state="asc" class="sort-btn" id="sort-impact" onclick="GradesUI.execute_sort_grades(event, this)">Impact <span>▼</span></button> 
+

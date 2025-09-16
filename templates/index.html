@@ -1,0 +1,2964 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focus Grade Calculator</title>
+    <link rel="icon" href="https://pouch.jumpshare.com/preview/RAtK5qckg1OrW61uz5uHxFwSz4LunU1zvyX-ISPT5kr6awiu1PNKvvXUCoiZwLPzKtM1O-8M-aOJHsBQtH5Ays_gDQQkv4SCiEdB6akbGxs" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="{{ url_for('static', filename='calculator.js') }}"></script>
+</head>
+<body>
+    <div class="menu">
+        <div class="top-menu">
+            <div class="tabs" id="tabs">
+                <a href="javascript:void(0)" class="tablink" id="settings" onclick="MenuSystem.execute_tab_clicked(event, this)">Settings</a>
+                <a href="javascript:void(0)" class="tablink" id="about" onclick="MenuSystem.execute_tab_clicked(event, this)">About</a>
+                <a href="javascript:void(0)" class="tablink" id="sessions" onclick="MenuSystem.execute_tab_clicked(event, this)">Sessions</a>
+                <a href="javascript:void(0)" class="tablink" id="save" onclick="DataManagement.execute_save_current_session(event)">Save</a>
+            </div>
+
+            <div class="tab-content" id="settings-tab-content" style="display: none">
+                <h2>Settings</h2>
+                <p class="tab-descr">User experience and local data storage.</p>
+
+                <div class="settings-context" id="configuration">
+                    <ul>
+                        <li>
+                            <label for="save-data-option">Allow saving data</label>
+                            <input type="checkbox" class="input-checkbox" id="save-data-option" name="save-data-option">
+                        </li>
+                        <li>
+                            <label for="automatic-load-previous-option">Automatically load previous save</label>
+                            <input type="checkbox" class="input-checkbox" id="automatic-load-previous-option" name="automatic-load-previous-option">
+                        </li>
+                        <li>
+                            <label for="autosave-option">Always autosave</label>
+                            <input type="checkbox" class="input-checkbox" id="autosave-option" name="autosave-option">
+                        </li>
+                    </ul>
+
+                    <ul>
+                        <li>
+                            <label for="manual-paste-default-option">Use manual pasting by default</label>
+                            <input type="checkbox" class="input-checkbox" id="manual-paste-default-option" name="manual-paste-default-option">
+                        </li>
+                        <li>
+                            <label for="automatic-calculate-option">Automatically calculate</label>
+                            <input type="checkbox" class="input-checkbox" id="automatic-calculate-option" name="automatic-calculate-option">
+                        </li>
+                        <li>
+                            <label for="disable-paste-ui-option">Disable Paste UI</label>
+                            <input type="checkbox" class="input-checkbox" id="disable-paste-ui-option" name="disable-paste-ui-option">
+                        </li>
+                        <li>
+                            <label for="display-grade-percentage-option">Display Grade Percentage</label>
+                            <input type="checkbox" class="input-checkbox" id="display-grade-percentage-option" name="display-grade-percentage-option">
+                        </li>
+                        <li>
+                            <label for="light-mode-option">Enable Light Mode</label>
+                            <input type="checkbox" class="input-checkbox" id="light-mode-option" name="light-mode-option">
+                        </li>
+                    </ul>   
+
+                    <button class="sumbit-settings-btn" onclick="DataManagement.execute_save_current_configuration()">Save Changes</button>
+                </div>
+            </div>
+
+            <div class="tab-content" id="about-tab-content" style="display: none">
+                <h2>About</h2>
+                <p class="tab-descr">Description of this website.</p>
+                <p class="content" style="font-size: 23px">This website is <b>NOT AFFILIATED</b> with <u>Focus School Software</u>.</p>
+                <p class="content">Welcome to the Focus Portal Grade Calculator! This website has been created to aid students calculating their grades and anticipate what their results will be.</p>
+                <p class="content">This should not be used to "squeeze your grade" and should be used as a guide to determine what is necessary to be as proficient as possible!</p>
+                <p class="content"><i>Grade calculating has an error of 0.01% compared to how focus calculates percentages. This is due to the various gradebook configurations.</i></p>
+                <p class="content">Click on the following subjects to learn more.</p>
+                <div class="input-row" style="margin-top: 15px">
+                    <button class="subject-btn" id="security" onclick="AboutTab.execute_open_subject(event, this)">Security</button>
+                    <button class="subject-btn" id="why" onclick="AboutTab.execute_open_subject(event, this)">Why this?</button>
+                    <button class="subject-btn" id="trust" onclick="AboutTab.execute_open_subject(event, this)">Still don't trust?</button>
+                </div>
+            </div>
+
+            <div class="tab-content" id="sessions-tab-content" style="display: none">
+                <h2>Sessions</h2>
+                <p class="tab-descr">Saved sessions for loading and editing.</p>
+                <div id="session-configurations">
+                    <div id="session-rows-container"> 
+                    </div>
+                    <div class="input-row" id="extra">
+                        <button class="add-row-btn" id="create-new-session" onclick="SessionsTab.execute_add_new_session(event)">New Session</button>
+                        <button class="add-row-btn" id="clear-interface" onclick="SessionsTab.execute_clear_current_interface(event)">Clear Current</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="about-tab-subjects">
+        <div class="subject-content" id="security" style="display: none;">
+            <h2>Security</h2>
+            <button class="close-btn">x</button>
+            <p class="subject-descr">What information is this stealing from you?</p>
+            <p>This website does not steal any information!</p>
+            <p>All programs are run directly on your own device to keep your information safe and prevent it from being stolen.</p>
+            <p>The only information that goes back and forth between your computer and the server is getting the webpage information.</p>
+            <p>That means all your <u>save-data is also stored locally inside the web browser.</u> Never leaving your device!</p>
+            <p>This website may request access to your clipboard; however, you can avoid granting this permission altogether without further complications. (And deny it in the settings of your web browser.)</p>
+            <p>But as always, you should <u><b>NEVER input sensitive information</b></u> such as identification and personal info.</p>
+        </div>
+
+        <div class="subject-content" id="why" style="display: none;">
+            <h2>Why Use This?</h2>
+            <button class="close-btn">x</button>
+            <p class="subject-descr">Why use this instead of other grade calculators.</p>
+            <p>Many of you have likely already used a grade calculator on the Internet.</p>
+            <p>Those websites not only require a considerable amount of time to input all the grades, but they are also filled with distracting advertisements and pose a risk of other companies using your data.</p>
+            <p>This website is proven to be the complete opposite: no ads, no companies collecting your data, and no more wasting time!</p>
+
+            <p>This service stands out for it's many features, as follows:</p>
+            <ul>
+                <li>Copying grades directly from Portal.</li>
+                <li>Fast and straightforward workspace.</li>
+                <li>Entirely ad-free environment.</li>
+                <li>Saving for later use.</li>
+                <li>Data is strictly saved locally on your device.</li>
+                <li>Instant Feedback.</li>
+                <li>Mobile compatibility.</li>
+            </ul>
+
+            <p style="margin-top: 20px;">Contact Information: <u>calculator.focus.feedback@gmail.com</u></p>
+            <p style="margin-top: 20px;">Author: Tyler Jundt<u></u></p>
+        </div>
+
+        <div class="subject-content" id="trust" style="display: none;">
+            <h2>Still don't trust?</h2>
+            <button class="close-btn">x</button>
+            <p class="subject-descr">Why should you trust me?</p>
+            <p style="margin-bottom: 4px;">I can't force you to trust me, but I can tell you I have no intention of stealing your personal information.</p>
+            <p style="margin-top: 0px;">Any info from you is probably useless ngl.</p>
+            <p>If you still don't trust me, you can always check the code of this website to see what it does...</p>
+            <p style="margin-bottom: 7px;">While on this website do: <b>Ctrl + Shift + i</b> OR <b>Right click > Inspect.</b></p>
+            <p style="margin-top: 0px;">Going to <b>'Hamburger' / 'Three Dots' Menu > More Tools > (Web) Developer Tools</b> will also bring it up.</p>
+            <div style="display: flex;">
+                <a href="https://i.ibb.co/jZ533r1/app-local-storage-img.png" target="_blank"><img src="https://i.ibb.co/jZ533r1/app-local-storage-img.png" alt="Image of inspection window: Application"></a>
+                <a href="https://i.ibb.co/zFkghQT/code-img.png" target="_blank"><img src="https://i.ibb.co/zFkghQT/code-img.png" alt="Image of inspection window: Sources /w Code."></a>
+            </div>
+            <div style="display: flex;">
+                <a href="https://i.ibb.co/qdqHyMQ/network-img.png" target="_blank"><img src="https://i.ibb.co/qdqHyMQ/network-img.png" alt="Image of inspection window: Networking"></a>
+                <a href="https://i.ibb.co/pLR7SBC/html-img.png" target="_blank"><img src="https://i.ibb.co/pLR7SBC/html-img.png" alt="Image of inspection window: Elements"></a>
+            </div>
+            <p><i>Note: The current state of this website will look slightly different since these screenshots were taken before completion.</i></p>
+        </div>
+    </div>
+
+    <div id="misc-subjects">
+        <div class="subject-content" id="welcome" style="display: none;">
+            <h2 style="text-align: center; font-size: 3.6em;">Welcome to the Focus Grade Calculator</h2>
+            <button class="close-btn">x</button>
+            <p class="subject-descr" style="text-align: center; margin-bottom: 6px;">Made just for you..</p>
+            <p style="text-align: center; font-size: 20px; margin-top: 0px;">THIS WEBSITE IS NOT AFFILIATED WITH <u>FOCUS SCHOOL SOFTWARE!</u></p>
+            <h3 style="font-size: 2.0em; margin-bottom: 0px;">Read this!</h3>
+            <p>Hello, welcome to the Focus Grade Calculator website.</p>
+            <p>Here, you can calculate your grades with ease and simplicity. No more wasting time inputting all your grades manually!</p>
+            <p>Simply copy your grades from the Focus Portal and paste them here. Then, click the 'Calculate' button to see your final grade!</p>
+            <p style="font-size: 22px;"><b>To start click on the bolded 'About' and 'Settings' tabs.</b></p>
+        </div>
+    
+        <div class="subject-content" id="sorting" style="display: none;">
+            <h2>Grade Sorting</h2>
+            <button class="close-btn">x</button>
+            <p class="subject-descr"  style="margin-bottom: 5px;">Explanations to the grade sorting systems.</p>
+            <p style="margin-top: 0px; margin-bottom: 0px;">There are four types of sorting methods presented.</p>
+
+            <h3 style="font-size: 1.5em; margin-bottom: 5px;"><u>Sorting by Name:</u></h3>
+            <p style="margin-top: 0px;">Sorting by name will sort the grades alphabetically. This is useful when you want to find a specific grade quickly.</p>
+            <p style="margin-bottom: 5px;">'Name ▲' sorts from Z to A (Z on the top).</p>
+            <p style="margin-top: 0px;">'Name ▼' sorts from A to Z (A on the top).</p>
+            
+            <h3 style="font-size: 1.5em; margin-bottom: 5px; margin-top: 60px;"><u>Sorting by Grade:</u></h3>
+            <p style="margin-top: 0px;">Sorting by grade will sort the assignment results (the grade on each assignment) from lowest to highest allowing you to visualize where you're absolutely terrible.</p>
+            <p style="margin-bottom: 5px;">'Grade ▲' sorts from highest to lowest (highest on top).</p>
+            <p style="margin-top: 0px;">'Grade ▼' sorts from lowest to highest (lowest on top).</p>
+
+            <h3 style="font-size: 1.5em; margin-bottom: 5px; margin-top: 60px;"><u>Sorting by Total:</u></h3>
+            <p style="margin-top: 0px;">Sorting by total will sort the assignments based of their maximum points.</p>
+            <p style="margin-bottom: 5px;">'Total ▲' sorts from highest to lowest (highest on top).</p>
+            <p style="margin-top: 0px;">'Total ▼' sorts from lowest to highest (lowest on top).</p>
+            
+            <h3 style="font-size: 1.5em; margin-bottom: 5px; margin-top: 60px;"><u>Sorting by Weight Categories:</u></h3>
+            <p style="margin-top: 0px;">Sorting by weight categories will bunch all assignments of the same weight together. Then each assignment is sorted based on grade percentage within each weight class.</p>
+            <p>The order is based on the order of the actual weight categories at the top.</p>
+            <p style="margin-bottom: 5px;">'Weight ▲' sorts from first weight to last weight (first on top).</p>
+            <p style="margin-top: 0px;">'Weight ▼' sorts from last weight to first weight (last on top).</p>
+        </div>
+    </div>
+    
+    
+
+    <div class="container" id="main-container">
+        <header id="site-title">
+            <h1 id="header-emoji"><span>🦉</span></h1>
+            <h1 style="text-align: center;">Focus Grade<br>Calculator</h1>
+            <h1 id="header-emoji"><span>🦉</span></h1>
+        </header>
+        <section class="weight-categories-section">
+            <h2 id="weight-categories-header">Weight Categories</h2>
+            <p class="subtitle">Enter the weight category name and the percentage towards the final grade.</p>
+            <div id="secondary-weights-container">
+                <div id="main-weight-inputs">
+                </div>
+                <button class="add-row-btn" id="add-row-btn" onclick="WeightUI.execute_add_weight_row()">Add Row</button>
+            </div>
+        </section>
+
+        <section class="paste-grades-section" id="paste-grades-section">
+            <h2>Pasting Subject Grades</h2>
+            <p class="subtitle">Copy and paste your grades from focus as demonstrated in the following.</p>
+            <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExa3llazgwbjV4c2Zic3djeDA4bWNubXFrdnU3b3dzZDN1bW81N2p0YyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/P4KwFfAtsgHCnVrsmI/giphy.gif" alt="(Gif could not display)">
+            
+            <div class="expander">
+                <button class="help-btn" onclick="Help.execute_toggle_help()">Click here for additional help!</button>
+                <div id="help-content" class="help-content">
+                    <ol>
+                        <li>Log into focus portal and select the class you would like to use.</li>
+                        <li>Bring up the quarter grades you are going to use.</li>
+                        <li>Start by highlighting the first assignment name (top left).</li>
+                        <li>Then drag (still selecting) to the bottom right of the last assignment in the 'Submit Files' category.</li>
+                        <li>Let go, but do not click anywhere else.</li>
+                        <li>Right click and select 'Copy'.</li>
+                        <li>You may also do ctrl + c OR on a macbook cmd + c (Just make sure to copy somehow).</li>
+                        <li>Now that you have the text copied, come back to this website and click the 'Paste from clipboard' button.</li>
+                        <li>You should see the grades populate below, you are able to change them to see different outcomes.</li>
+                        <li>After every edit, you can click the "Calculate" button so see how your changes affect (if necessary).</li>
+                        <li><b><a href="javascript:void(0)" onclick="PasteData.execute_display_alt_paste()" style="color: var(--text-color);">(Click here)</a> If you cannot paste with the 'Paste from clipboard' button!</b></li>
+                    </ol>
+                </div>
+            </div>
+            <button class="paste-btn" id="paste-btn">Paste from clipboard</button>
+            <div class="input-row" id="paste-alt" style="margin-top: 10px; display: none">
+                <textarea type="text" id="paste-text-field" placeholder="Paste data here:"></textarea>
+                <button id="alt-paste-btn" class="alt-paste-btn" onclick="PasteData.execute_pasted_in_field(this)">Enter</button>
+            </div>
+        </section>
+        <section class="input-grades-section" id="input-grades-section">
+            <h2 id="input-grades-header">Grades</h2>
+            <p class="subtitle" style="margin-bottom: 5px;">Make edits to your grades, then click 'Calculate' to see new results.</p>
+            <div class="sort-menu" id="sort-menu">
+                <button id="sort-menu-button" class="default-btn" onclick="GradesUI.execute_toggle_sort_menu(event, this)">Sort</button>
+                <div class="input-row" style="display: none;">
+                    <button state="desc" class="sort-btn" id="sort-name" onclick="GradesUI.execute_sort_grades(event, this)">Name <span>▲</span></button>
+                    <button state="asc" class="sort-btn" id="sort-name" onclick="GradesUI.execute_sort_grades(event, this)">Name <span>▼</span></button>
+                    <button state="desc" class="sort-btn" id="sort-grade" onclick="GradesUI.execute_sort_grades(event, this)">Grade <span>▲</span></button>
+                    <button state="asc" class="sort-btn" id="sort-grade" onclick="GradesUI.execute_sort_grades(event, this)">Grade <span>▼</span></button>
+                    <button state="desc" class="sort-btn" id="sort-maxpoints" onclick="GradesUI.execute_sort_grades(event, this)">Total <span>▲</span></button>
+                    <button state="asc" class="sort-btn" id="sort-maxpoints" onclick="GradesUI.execute_sort_grades(event, this)">Total <span>▼</span></button>
+                    <button state="desc" class="sort-btn" id="sort-weight" onclick="GradesUI.execute_sort_grades(event, this)">Weight <span>▲</span></button> 
+                    <button state="asc" class="sort-btn" id="sort-weight" onclick="GradesUI.execute_sort_grades(event, this)">Weight <span>▼</span></button> 
+                    <button class="sort-btn" id="help" style="padding-left: 5px; padding-right: 5px;" onclick="GradesUI.execute_open_sorting_help(event)">Help</button>
+                </div>
+            </div>
+            <div id="secondary-grades-container">
+                <div id="main-grade-inputs">
+                </div>
+                <button class="add-row-btn" id="add-row-btn" onclick="GradesUI.execute_add_grade_row()">Add Row</button>
+            </div>
+        </section>
+        <section class="final-results-section">
+            <button id="calculate-button" class="calculate-btn" onclick="Calculate.execute_calculate_grade()">Calculate</button>
+            <h2 id="grade-summary-header">Final Grade Summary</h2>
+            <div id="summary">
+                <div id="weight-scores">
+                </div>
+                <h4 id="final-grade">No results</h4>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        async function on_website_initialization() {
+            // Load settings
+            const new_user = DataManagement.get_local_variable("save-data-locally") == null;
+            MenuSystem.map_stored_to_settings(true);
+
+            // Load data
+            DataManagement.update_current_with_local_vars();
+            if (DataManagement.get_local_variable('automatic-load-previous') == 'true') {
+                const currently_loaded_session_uuid = DataManagement.get_local_variable('current-loaded-session');
+                let sessions = DataManagement.get_local_variable('grade-sessions');
+                if (sessions) {
+                    sessions = JSON.parse(sessions);
+                    if (currently_loaded_session_uuid && sessions[currently_loaded_session_uuid]) {
+                        DataManagement.load_grades_data(currently_loaded_session_uuid);
+                    }
+                }
+            }
+            else
+            {
+                localStorage.setItem('current-loaded-session', null);
+            }
+            
+            // New User Greeting
+            if (new_user == true) {
+                const about_tab = document.getElementById('tabs').querySelector('a[id="about"]');
+                about_tab.innerHTML = '<u><b>About</b></u>';
+                const settings_tab = document.getElementById('tabs').querySelector('a[id="settings"]');
+                settings_tab.innerHTML = '<u><b>Settings</b></u>';
+                await AboutTab.display_subject("welcome");
+            }
+        }
+        document.addEventListener('DOMContentLoaded', on_website_initialization);
+
+        class DataManagement {
+            /**
+            * Generates a unique identifier.
+            * If there are existing sessions stored locally, it ensures the new identifier is unique.
+            * 
+            * @returns {string} A unique identifier.
+            */
+            static generate_unique_indentifier() {
+                let sessions = DataManagement.get_local_variable('grade-sessions');
+                if (!sessions) {
+                    return Calculate.generate_uuid_v4();
+                }
+                else {
+                    sessions = JSON.parse(sessions);
+                    let uuid = null;
+                    while (uuid == null || sessions[uuid]) {
+                        uuid = Calculate.generate_uuid_v4();
+                    }
+                    return uuid;
+                }
+            }
+
+
+            static get_name_approval(name) {
+                if (name == null) { console.error("name is null."); return null; }
+
+                const max_chars = 150; const min_chars = 2;
+                if (name.length == 0) {
+                    return "empty";
+                }
+                else if (name.length > max_chars) {
+                    return "long";
+                }
+                else if (name.length < min_chars) {
+                    return "short";
+                }
+
+                return "success";
+            }
+
+
+            /**
+            * Saves the current configuration settings to local storage.
+            */
+            static async execute_save_current_configuration() {
+                // Save Data Option
+                let close_tab_after = true;
+                try {
+                    let save_data_option = document.getElementById('save-data-option').checked;
+                    var needs_confirmation = save_data_option == false && DataManagement.is_saving_enabled() == true;
+                    if (needs_confirmation == false) {
+                        // Doesn't need any confirmation to change the setting
+                        close_tab_after = !(save_data_option == true && DataManagement.is_saving_enabled() == false);
+                        localStorage.setItem('save-data-locally', save_data_option);
+                    }
+                    else { close_tab_after = false; }
+                }
+                catch { close_tab_after = false; GeneralUI.create_warning_prompt("<b>Failed to save 'Save data locally on browser' configuration.</b>", document.getElementById('configuration'), -1, false); }
+
+                let wiped_data = false; // Substitute so it doesn't need to get a local variable from storage to check if been wiped.
+                if (needs_confirmation == true) {
+                    try {
+                        const user_confirmation = await GeneralUI.force_get_user_input("Are you sure you want to disable saving data locally on your browser? This will clear all saved data.", "confirmation");
+                        if (user_confirmation == true) {
+                            const text_confirm_options = [
+                                "I'M AN ACADEMIC WEAPON!", "THE ACADEMIC COMEBACK IS REAL!", "I'M THE GRADE GOD!", "I'M THE MASTER OF METRICS!", "I'M THE POINTS PREDICTOR!", "CONFIRM THIS THING ALREADY!",
+                                "CONFIRM CONFIRM CONFIRM!", "ENOUGH WITH THE CONFIRMATIONS!", "WE GOING TO COLLEGE WITH THIS ONE!"
+                            ]; 
+                            let random_option = text_confirm_options[Math.floor(Math.random() * text_confirm_options.length)];
+
+                            const text_confirmation = await GeneralUI.force_get_user_input(`Please type '${random_option}' exactly to confirm this action.`, "get-text", true);
+                            if (text_confirmation) {
+                                let text = text_confirmation.toUpperCase().trim().replaceAll("'", "").replaceAll("!", "");
+                                random_option = random_option.toUpperCase().replaceAll("'", "").replaceAll("!", "");
+
+                                if (text == random_option) {
+                                    // Clear All Data
+                                    DataManagement.clear_save_configs();
+                                    wiped_data = true; 
+                                    GeneralUI.create_info_prompt("<b>Confirmation confirmed!</b> All site data has been wiped!", document.getElementById('configuration'), -1, false);
+                                    DataManagement.update_headers_and_interface(null);
+                                }
+                            }
+                        }
+
+                        if (wiped_data == false) {
+                            // User Denied
+                            MenuSystem.map_stored_to_settings();
+                            GeneralUI.create_info_prompt("<b>Unable to get full confirmation!</b> You're data has not been wiped and local saving is still enabled.", document.getElementById('configuration'), -1, false);
+                            return;
+                        }
+                    }
+                    catch {
+                        close_tab_after = false; 
+                        GeneralUI.create_warning_prompt("<b>Failed to get your confirmation!</b> You're data has not been wiped and local saving is still enabled.", document.getElementById('configuration'), -1, false);
+                    }
+                }
+
+                if (wiped_data == false) {
+                    // Automatic Load Previous Option 
+                    try {
+                        const automatic_load_previous_option = document.getElementById('automatic-load-previous-option').checked;
+                        localStorage.setItem('automatic-load-previous', automatic_load_previous_option);
+                    }
+                    catch { close_tab_after = false; GeneralUI.create_warning_prompt("<b>Failed to save 'Automaticly load previous save' configuration.</b>", document.getElementById('configuration'), -1, false); }
+
+                    // Autosave Option
+                    try {
+                        const autosave_option = document.getElementById('autosave-option').checked;
+                        localStorage.setItem('autosave', autosave_option);
+                    }
+                    catch { close_tab_after = false; GeneralUI.create_warning_prompt("<b>Failed to save 'Always autosave' configuration.</b>", document.getElementById('configuration'), -1, false); }
+                }
+                
+
+                // Manual Paste Default Option
+                try {
+                    const manual_paste_default_option = document.getElementById('manual-paste-default-option').checked;
+                    localStorage.setItem('manual-paste-default', manual_paste_default_option);
+                }
+                catch { close_tab_after = false; GeneralUI.create_warning_prompt("<b>Failed to save 'Use manual pasting by default' configuration.</b>", document.getElementById('configuration'), -1, false); }
+
+                // Automatic Calculate Option
+                try {
+                    const automatic_calculate_option = document.getElementById('automatic-calculate-option').checked;
+                    localStorage.setItem('automatic-calculate', automatic_calculate_option);
+                }
+                catch { close_tab_after = false; GeneralUI.create_warning_prompt("<b>Failed to save 'Automatic Calculate' configuration.</b>", document.getElementById('configuration'), -1, false); }
+
+                // Disable Paste UI Option
+                try {
+                    const disable_paste_ui = document.getElementById('disable-paste-ui-option').checked;
+                    localStorage.setItem('disable-paste-ui', disable_paste_ui);
+                }
+                catch { close_tab_after = false; GeneralUI.create_warning_prompt("<b>Failed to save 'Display Pasting UI' configuration.</b>", document.getElementById('configuration'), -1, false); }
+
+                // Display Grade Percentage Option
+                try {
+                    var display_grade_percentage = document.getElementById('display-grade-percentage-option').checked;
+                    var display_grade_percentage_prev = DataManagement.get_local_variable('display-grade-percentage');
+                    localStorage.setItem('display-grade-percentage', display_grade_percentage);
+                }
+                catch { close_tab_after = false; GeneralUI.create_warning_prompt("<b>Failed to save 'Display Grade Percentage' configuration.</b>", document.getElementById('configuration'), -1, false); }
+
+                // Display the percentages for all the grades
+                if (display_grade_percentage_prev && display_grade_percentage_prev != display_grade_percentage) {
+                    const grade_rows = document.getElementById('main-grade-inputs').querySelectorAll("[id='grade']");
+                    for (let r of grade_rows) {
+                        const percentage_element = r.querySelector('input[id="percentage"]');
+                        if (display_grade_percentage == true) {
+                            GradesUI.update_percentage_display(r);
+                            percentage_element.style.display = 'block';
+                        }
+                        else 
+                        {
+                            percentage_element.style.display = 'none';
+                        }
+                    }
+                }
+                
+
+                // Light Mode Option
+                try {
+                    const light_mode = document.getElementById('light-mode-option').checked;
+                    const light_mode_prev = DataManagement.get_local_variable('light-mode');
+                    if (light_mode != null && light_mode != (light_mode_prev == 'true')) {
+                        close_tab_after = false;
+                    }
+                    localStorage.setItem('light-mode', light_mode);
+                }
+                catch { close_tab_after = false; GeneralUI.create_warning_prompt("<b>Failed to save 'Light Mode' configuration.</b>", document.getElementById('configuration'), -1, false); }
+
+                DataManagement.update_current_with_local_vars();
+                if (close_tab_after == true) {
+                    MenuSystem.unhighlight_all_tabs();
+                    MenuSystem.close_tab("settings");
+                }
+            }
+
+
+            /**
+            * Generates a unique identifier.
+            * If there are existing sessions stored locally, it ensures the new identifier is unique.
+            * 
+            * @param {string} session_uuid - A unique identifier.
+            * @param {string} session_name - A name for the save.
+            * @param {boolean} recompile_session - Determines if the session should be inputted (overrided) with new data (from current elements). False when only editting name & indentifier.
+            * 
+            * @returns {Array} Returns state results as string and the uuid in an array.
+            */
+            static save_current_grades_data(session_uuid, session_name, recompile_session = true) {
+                if (DataManagement.is_saving_enabled() == false) {
+                    return;
+                }
+
+                let weights = null; let grades = null;
+                if (recompile_session == true) {
+                    weights = WeightUI.compile_weights_from_elements(true);
+                    grades = GradesUI.compile_grades_from_elements(WeightUI.compile_weights_from_elements(false), true);
+                }
+
+                let sessions = null;
+                if (!DataManagement.get_local_variable('grade-sessions')) {
+                    localStorage.setItem('grade-sessions', JSON.stringify({}));
+                } 
+                sessions = DataManagement.get_local_variable('grade-sessions');
+                sessions = JSON.parse(sessions); // Convert to object
+                const uuid = session_uuid ? session_uuid : DataManagement.generate_unique_indentifier();
+                
+                if (recompile_session == false) { weights = sessions[uuid]['weights']; grades = sessions[uuid]['grades']; }
+
+                // Check if the name is already taken
+                let name_exists_uuid = null;
+                for (let [uuid_key, value] of Object.entries(sessions)) {
+                    if (value['name'] == session_name && uuid_key != uuid) {
+                        name_exists_uuid = uuid_key;
+                        break;
+                    }
+                }
+
+                // Save the data
+                const state = name_exists_uuid ? "override" : "success";
+                
+                if (state == "override") {
+                    sessions[name_exists_uuid] = {"name": sessions[name_exists_uuid]['name'], "weights": weights, "grades": grades };
+                    delete sessions[uuid];
+                }
+                else if (state == "success" || state == "force-override") {
+                    if (session_name == null) {
+                        session_name = sessions[uuid] ? sessions[uuid]['name'] : "Unnamed Save";
+                    }
+                    sessions[uuid] = { "name": session_name, "weights": weights, "grades": grades };
+                }
+                
+                localStorage.setItem('grade-sessions', JSON.stringify(sessions));
+                return [state, uuid];
+            }
+
+            static async execute_save_current_session(event) {
+                await DataManagement.save_current_session();
+            }
+
+            static async save_current_session() {
+                if (DataManagement.is_saving_enabled() == false) {
+                    return;
+                }
+                
+                const currently_loaded_session_uuid = DataManagement.get_local_variable('current-loaded-session');
+                let sessions = DataManagement.get_local_variable('grade-sessions');
+                if (sessions) {
+                    sessions = JSON.parse(sessions);
+                }
+
+                if (!currently_loaded_session_uuid  || !sessions) {
+                    // Prompt new save and get name (in a special way)
+                    let user_input = 99; let finished = false;
+                    let executable_function = null;
+                    while (true) {
+                        executable_function = null;
+                        if (user_input == null) { return; }
+                        if (user_input != 99) {
+                            user_input = user_input.trim();
+                            const name_approval = DataManagement.get_name_approval(user_input);
+                            switch (name_approval) {
+                                case "empty":
+                                    executable_function = function(parent) { 
+                                        GeneralUI.create_warning_prompt("Please enter a name for the save.", parent, -1, true);
+                                        parent.querySelector('input').value = user_input;
+                                    }
+                                    break;
+                                case "long":
+                                    executable_function = function(parent) { 
+                                        GeneralUI.create_warning_prompt("The name is too long (150+ characters), please shorten it.", parent, -1, true);
+                                        parent.querySelector('input').value = user_input;
+                                    }
+                                    break;
+                                case "short":
+                                    executable_function = function(parent) {
+                                        GeneralUI.create_warning_prompt("The name is too short, please include at least 2 characters.", parent, -1, true);
+                                        parent.querySelector('input').value = user_input;
+                                    }
+                                    break;
+                                case "success":
+                                    finished = true;
+                                    break;
+                            }
+                        }
+                        if (finished == true) { break; }
+
+                        user_input = await GeneralUI.force_get_user_input("Please enter a name for the save.", "get-text", false, executable_function);
+                    }
+
+                    if (DataManagement.check_for_existing_name(user_input)) {
+                        const user_confirmation = await GeneralUI.force_get_user_input("A save with that name already exists. Would you like to override it?", "confirmation");
+                        if (user_confirmation == false) {
+                            return;
+                        }
+                    }
+
+                    const results = DataManagement.save_current_grades_data(null, user_input, true);
+                    const state = results[0]; const uuid = results[1];
+                    localStorage.setItem('current-loaded-session', uuid);
+                    DataManagement.update_headers_and_interface(user_input);
+                    SessionsTab.populate_session_rows();
+                }
+                else if (sessions[currently_loaded_session_uuid]) {
+                    // Save like normal
+                    DataManagement.save_current_grades_data(currently_loaded_session_uuid, null, true)[0];
+                }
+                else 
+                {
+                    console.error("No session found with the current loaded session uuid: " + currently_loaded_session_uuid);
+                    return;
+                }
+
+                const save_tab = document.getElementById('tabs').querySelector('a[id="save"]');
+                save_tab.style.textDecoration = "none";
+                return true;
+            }
+
+
+            /**
+             * Autosaves the current session.
+            */
+            static autosave_session() {
+                if (DataManagement.is_saving_enabled() == false) {
+                    return;
+                }
+
+                if (DataManagement.get_local_variable('autosave') == 'true') {
+                    const current_loaded_session_uuid = DataManagement.get_local_variable('current-loaded-session');
+                    let sessions = DataManagement.get_local_variable('grade-sessions');
+                    if (sessions) {
+                        sessions = JSON.parse(sessions);
+                        if (current_loaded_session_uuid && sessions[current_loaded_session_uuid]) {
+                            DataManagement.save_current_grades_data(current_loaded_session_uuid, null, true);
+                            return;
+                        }
+                    }
+                }
+
+                // Underline the save tab button
+                const save_tab = document.getElementById('tabs').querySelector('a[id="save"]');
+                    save_tab.style.textDecoration = "underline";
+            }
+
+            
+            /**
+            * Loads the grades data from a saved session.
+            * 
+            * @param {string} session_uuid - A unique identifier.
+            */
+            static load_grades_data(session_uuid, new_save = false) {
+                if (DataManagement.is_saving_enabled() == false) {
+                    return;
+                }
+
+                let sessions = localStorage.getItem('grade-sessions');
+                if (!sessions) {
+                    console.log('No saved sessions found.');
+                    return;
+                }
+                sessions = JSON.parse(sessions);
+                const save_data = sessions[session_uuid];
+
+                if (sessions[session_uuid] == null) {
+                    console.error('No saved session found with the given uuid: '  + session_uuid);
+                    return;
+                }
+
+                // Get data
+                const session_name = save_data["name"];
+                const weights = save_data["weights"];
+                const grades = save_data["grades"];
+
+                // Clear current display
+                DataManagement.clear_interface();
+
+                // Display weights
+                const weights_container = document.getElementById('main-weight-inputs');
+                for (let [key, value] of Object.entries(weights)) {
+                    value = value.toString();
+                    const name_formatting = {
+                        '"': '&quot;',
+                        "'": "&apos;",
+                        "`": "&grave;"
+                    }
+                    for (let [x, v] of Object.entries(name_formatting)) {
+                        name = name.replaceAll(x, v);
+                    }
+
+                    const new_row = WeightUI.initialize_weight_row(key, value);
+                    weights_container.appendChild(new_row);
+                }
+
+                // Update Header UIs
+                DataManagement.update_headers_and_interface(session_name);
+
+                // Close the sort menu
+                GradesUI.close_sort_menu();
+
+                // Set as currently loaded session
+                localStorage.setItem('current-loaded-session', session_uuid);
+
+                // Display grades
+                if (grades.length == 0) {
+                    const paste_grades_section = document.getElementById('paste-grades-section');
+                    GeneralUI.create_warning_prompt("No grades could be found in this save.", paste_grades_section, -1, false);
+                    return;
+                }
+
+                const grades_container = document.getElementById('main-grade-inputs');
+                grades.forEach((g, index) => {
+                    let name = g.name;
+                    let min = g.min;
+                    let max = g.max;
+                    const weight = g.weight_cat;
+
+                    const name_formatting = {
+                        '"': '&quot;',
+                        "'": "&apos;",
+                        "`": "&grave;"
+                    }
+                    for (let [key, value] of Object.entries(name_formatting)) {
+                        name = name.replaceAll(key, value);
+                    }
+
+                    if (Number.isNaN(min)) {
+                        min = "*";
+                    }
+                    if (Number.isNaN(max)) {
+                        max = "*";
+                    }
+                    
+                    const new_row = GradesUI.initialize_grade_row(name, min, max, weight);
+
+                    grades_container.appendChild(new_row);
+                });
+
+                // Calculate final grade
+                Calculate.calculate_grade(!new_save);
+            }
+
+
+            /**
+            * Updates the headers of the interface to display loaded name.
+            * 
+            * @param {string} session_name - The name of the loaded session.
+            */
+            static update_headers_and_interface(session_name = null) {
+                if (session_name) {
+                    document.getElementById('weight-categories-header').innerText = session_name + " Weights"
+                    document.getElementById('input-grades-header').innerText = session_name + " Grades";
+                    document.getElementById('grade-summary-header').innerText = session_name + " Summary";
+                }
+                else {
+                    document.getElementById('weight-categories-header').innerText = "Weight Categories"
+                    document.getElementById('input-grades-header').innerText = "Grades";
+                    document.getElementById('grade-summary-header').innerText = "Final Grade Summary";
+                }
+            }
+
+
+            /**
+            * Returns if saving is enabled or not.
+            * 
+            * @returns {boolean} True if saving is enabled, false otherwise.
+            */
+            static is_saving_enabled() {
+                const x = localStorage.getItem('save-data-locally') == 'true';
+                if (x == false) { console.log("Saving is disabled."); }
+                return x;
+            }
+
+
+            /**
+            * Returns a local variable value.
+            * @param {string} var_name - The name of the local variable.
+            * 
+            * @returns {string} Returns variable in stringfied format.
+            */
+            static get_local_variable(var_name) {
+                const value = localStorage.getItem(var_name);
+                return value == 'null' ? null : value;
+            }
+
+
+            /**
+            * Updates the current state of the interface with the local variables.
+            */
+            static update_current_with_local_vars() {
+                const saving_enabled = DataManagement.is_saving_enabled();
+                DataManagement.settings_enabled(saving_enabled);
+
+                // Paste Settings
+                const disable_paste_ui = DataManagement.get_local_variable('disable-paste-ui');
+                if (disable_paste_ui == 'true') {
+                    document.getElementById('paste-grades-section').style.display = 'none';
+                }
+                else {
+                    document.getElementById('paste-grades-section').style.display = 'block';
+                    const manual_paste_default_option = DataManagement.get_local_variable('manual-paste-default');
+                    document.getElementById('paste-btn').style.display = manual_paste_default_option == 'true' ? 'none' : 'block';
+                    document.getElementById('paste-alt').style.display = manual_paste_default_option == 'true' ? 'flex' : 'none';
+                }
+
+                // Color Scheme
+                const light_mode = DataManagement.get_local_variable('light-mode');
+                const new_theme = light_mode == 'true' ? 'light' : 'dark';
+                document.body.setAttribute('data-theme', new_theme);
+
+                // Autocalculate button
+                const automatic_calculate_option = DataManagement.get_local_variable('automatic-calculate');
+                document.getElementById('calculate-button').style.display = automatic_calculate_option  == 'true' ? 'none' : 'block';
+            }
+        
+
+            /**
+            * Clears the local storage and disables saving by default.
+            */
+            static clear_save_configs() {
+                for (let key of ['autosave', 'automatic-load-previous', "grade-sessions", "current-loaded-session"]) {
+                    localStorage.removeItem(key);
+                }
+                localStorage.setItem('save-data-locally', 'false');
+            }
+        
+            /**
+            * Disable or enable the settings Interaface UI.
+            * 
+            * @param {boolean} enabled - A boolean value to enable or disable the settings.
+            */
+            static settings_enabled(enabled) {
+                const settings_configuration = document.getElementById('configuration');
+                const ids = ["automatic-load-previous-option", "autosave-option"];
+                for (let id of ids) {
+                    const element = settings_configuration.querySelector('input[id="' + id + '"]');
+                    element.disabled = !enabled;
+                    const label = element.parentElement.querySelector('label');
+                    label.style.color = enabled ? "var(--text-color-1)" : "var(--text-color-2)";
+                    if (enabled == false) { element.checked = false; }
+                }
+
+                const tabs = document.getElementById("tabs");
+                const save_tab = tabs.querySelector('a[id="save"]');
+                const sessions_tab = tabs.querySelector('a[id="sessions"]');
+
+                for (let tab of [save_tab, sessions_tab]) {
+                    GeneralUI.disable_element(tab, !enabled);
+                    tab.style.color = enabled ? 'var(--text-color)' : 'var(--text-color-2)';
+                }
+            }
+        
+            
+            /**
+             * Clears the grades/weights/final summary interface, restoring it back to normal.
+             */
+            static clear_interface() {
+                const grades_container = document.getElementById('main-grade-inputs');
+                while (grades_container.firstChild) {
+                    grades_container.removeChild(grades_container.firstChild);
+                }
+
+                const weights_container = document.getElementById('main-weight-inputs');
+                while (weights_container.firstChild) {
+                    weights_container.removeChild(weights_container.firstChild);
+                }
+
+                DataManagement.update_headers_and_interface(null);
+
+                // Clear all prompts
+                GeneralUI.clear_prompts();
+
+                // Clear Final Grade
+                const weight_scores = document.getElementById('weight-scores');
+                while (weight_scores.firstChild) {
+                    weight_scores.removeChild(weight_scores.firstChild);
+                }
+
+                document.getElementById('final-grade').innerText = "No results";
+                document.getElementById('weight-scores').innerText = "";
+            }
+            
+
+            static check_for_existing_name(name) {
+                let sessions = DataManagement.get_local_variable('grade-sessions');
+                if (sessions) {
+                    sessions = JSON.parse(sessions);
+                    for (let [uuid, value] of Object.entries(sessions)) {
+                        if (value['name'] == name) {
+                            return uuid;
+                        }
+                    }
+                }
+                return null;
+            }
+        
+        
+            static remove_session_save(uuid) {
+                if (DataManagement.is_saving_enabled() == false) {
+                    return;
+                }
+
+                let sessions = DataManagement.get_local_variable('grade-sessions');
+                if (sessions) {
+                    sessions = JSON.parse(sessions);
+                    if (sessions[uuid]) {
+                        delete sessions[uuid];
+                        localStorage.setItem('grade-sessions', JSON.stringify(sessions));
+                        const currently_loaded_session_uuid = DataManagement.get_local_variable('current-loaded-session');
+                        if (currently_loaded_session_uuid == uuid) {
+                            DataManagement.clear_interface();
+                            localStorage.setItem('current-loaded-session', null);
+                        }
+                    }
+                }
+            }
+        }
+        
+        window.addEventListener('resize', function() {
+            const tab_content = document.querySelector('div[class="tab-content"][style="display: flex;"]');
+            MenuSystem.change_tab_pos(tab_content);
+        });
+
+        class MenuSystem {
+            static change_tab_pos(tab_content = null) {
+                const menu = document.querySelector('.menu');
+                if (window.innerWidth >= 1399) {
+                    menu.style.position = "fixed";
+                }
+                else {
+                    menu.style.position = "absolute";
+                }
+
+                if (tab_content == null) { return; }
+                const rect = tab_content.getBoundingClientRect();
+                if (rect.bottom > window.innerHeight || window.innerWidth <= 1399) {
+                    menu.style.position = "absolute";
+                }
+                else if (rect.top >= 0) {
+                    menu.style.position = "fixed";
+                }
+            }
+
+            /**
+            * Opens tab content according to a tab.
+            * 
+            * @param {Event} tab_content_element - The tab content element to open.
+            */
+            static open_tab(tab_name) {
+                const tab_content_element = document.getElementById(tab_name + "-tab-content");
+                const top_menu_tab_contents = document.getElementsByClassName("tab-content");
+                if (top_menu_tab_contents.length == 0) {
+                    console.error("No tab contents found for tab.")
+                    return;
+                }
+
+                // Close all other tabs
+                for (let tab_content of top_menu_tab_contents) {
+                    tab_content.style.display = "none";
+                }
+
+                if (tab_content_element.id == "sessions-tab-content") {
+                    SessionsTab.populate_session_rows();
+                }
+                else if (tab_content_element.id == "settings-tab-content") {
+                    MenuSystem.map_stored_to_settings();
+                    const about_tab = document.getElementById('tabs').querySelector('a[id="settings"]');
+                    about_tab.innerHTML = 'Settings';
+                }
+                else if (tab_content_element.id == "about-tab-content") {
+                    const about_tab = document.getElementById('tabs').querySelector('a[id="about"]');
+                    about_tab.innerHTML = 'About';
+                }
+
+                // Display tab
+                tab_content_element.style.display = "flex";
+
+                const menu = document.querySelector('.menu');
+                MenuSystem.change_tab_pos(tab_content_element);
+            }
+
+
+            static async check_for_unsaved(handle_unsaved = true) { // When Returns false means no unsaved changes
+                if (DataManagement.is_saving_enabled() == false) {
+                    return null;
+                }
+
+                // Check if their current session isn't saved (by element)! *not as secure*
+                const save_btn = document.querySelector('a[id="save"][class="tablink"]');
+
+                if (!save_btn) {
+                    console.error("Save button not found.");
+                    return;
+                }
+
+                if (save_btn.style.textDecoration == "underline") {
+                    if (handle_unsaved == false) {
+                        return true;
+                    }
+
+                    const confirmation = await GeneralUI.force_get_user_input("You have unsaved changes you haven't saved to a session, <b>would you like to save them?</b>", "confirmation", null, null, true);
+                    if (confirmation == true) {
+                        const current_loaded_session_uuid = DataManagement.get_local_variable('current-loaded-session');
+                        if (current_loaded_session_uuid) 
+                        { await DataManagement.save_current_grades_data(current_loaded_session_uuid, null, true); }
+                        else
+                        { 
+                            const results = await DataManagement.save_current_session(); // Returns undefined (NOT null) if user cancels.
+                            return !(results == true);
+                        }
+                    }
+                    else if (confirmation == null) {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+
+            /**
+            * Closes tab content according to a tab.
+            * 
+            * @param {boolean} tab_content_element - The tab content element to close.
+            */
+            static close_tab(tab_name) {
+                const tab_content = document.getElementById(tab_name + "-tab-content");
+                tab_content.style.display = "none";
+                const menu = document.querySelector('.menu');
+                MenuSystem.change_tab_pos(tab_content);
+            }
+
+            static unhighlight_all_tabs() {
+                const tabs = document.getElementById("tabs");
+                for (let tab of tabs.querySelectorAll('a[class="tablink"]')) {
+                    if (tab.id == "save") { continue; }
+                    tab.style.backgroundColor = null;
+                }
+            }
+
+            static execute_tab_clicked(event, tab_element) {
+                const tab_content_element = document.getElementById(tab_element.id + "-tab-content");
+
+                // Clear the other tabs select highlight
+                MenuSystem.unhighlight_all_tabs();
+
+                if (tab_content_element.style.display == "none") {
+                    // Tab is not open
+                    MenuSystem.open_tab(tab_element.id);
+                    tab_element.style.backgroundColor = "var(--hover-color-1)";
+                } else {
+                    // Tab is already open and needs to be closed
+                    MenuSystem.close_tab(tab_element.id);
+                }
+            }
+
+
+            static map_stored_to_settings(first_time = false) {
+                // Load settings
+                const saved_save_data_locally = DataManagement.get_local_variable('save-data-locally');
+                if (saved_save_data_locally) {
+                    document.getElementById('save-data-option').checked = saved_save_data_locally == 'true';
+                }
+                else if (saved_save_data_locally == null && first_time == true) {
+                    // First time user
+                    console.log("First time user.");
+                    localStorage.setItem('save-data-locally', 'true');
+                }
+
+                const default_manual_pasting = DataManagement.get_local_variable('manual-paste-default');
+                if (default_manual_pasting) {
+                    document.getElementById('manual-paste-default-option').checked = default_manual_pasting == 'true';
+                }
+
+                const automatic_calculate = DataManagement.get_local_variable('automatic-calculate');
+                if (automatic_calculate) {
+                    document.getElementById('automatic-calculate-option').checked = automatic_calculate == 'true';
+                }
+
+                const automatic_load_previous = DataManagement.get_local_variable('automatic-load-previous');
+                if (automatic_load_previous) {
+                    document.getElementById('automatic-load-previous-option').checked = automatic_load_previous == 'true';
+                }
+
+                const autosave = DataManagement.get_local_variable('autosave');
+                if (autosave) {
+                    document.getElementById('autosave-option').checked = autosave == 'true';
+                }
+
+                
+                const disable_paste_ui = DataManagement.get_local_variable('disable-paste-ui');
+                if (disable_paste_ui) {
+                    document.getElementById('disable-paste-ui-option').checked = disable_paste_ui == 'true';
+                }
+
+                const display_grade_percentage = DataManagement.get_local_variable('display-grade-percentage');
+                if (display_grade_percentage) {
+                    document.getElementById('display-grade-percentage-option').checked = display_grade_percentage == 'true';
+                }
+
+                const light_mode = DataManagement.get_local_variable('light-mode');
+                if (light_mode) {
+                    document.getElementById('light-mode-option').checked = light_mode == 'true';
+                }
+            }
+        }
+
+        async function on_website_reload(event) {
+            if (DataManagement.is_saving_enabled() == false || await MenuSystem.check_for_unsaved(false) == true) {
+                const confirmation_message = "Are you sure you want to leave? You may have unsaved changes.";
+                event.returnValue = confirmation_message; // For most browsers
+                return confirmation_message;
+            } 
+            else {
+                return;
+            }
+        }
+        window.addEventListener('beforeunload', function(e) { on_website_reload(event); });
+
+        function throttle(func, limit) {
+            let lastFunc;
+            let lastRan;
+            return function(...args) {
+                const context = this;
+                if (!lastRan) {
+                    func.apply(context, args);
+                    lastRan = Date.now();
+                } else {
+                    clearTimeout(lastFunc);
+                    lastFunc = setTimeout(function() {
+                        if ((Date.now() - lastRan) >= limit) {
+                            func.apply(context, args);
+                            lastRan = Date.now();
+                        }
+                    }, limit - (Date.now() - lastRan));
+                }
+            };
+        }
+
+        const initialize_sortable_list = (e, sortable_list, mobile_touch) => {
+            const dragging_item = sortable_list.querySelector(".dragging");
+            if (dragging_item == null) { return; }
+            e.preventDefault();
+
+            // Getting all items except currently dragging and making array of them
+            const siblings = Array.from(sortable_list.children).filter(item => item !== dragging_item);
+            
+            // Get mouse position relative to the parent of the sibling
+            let mousePos = e.clientY;
+            if (mobile_touch) 
+            { mousePos = e.touches[0].clientY; }
+            else 
+            { mousePos = e.clientY; }
+
+            // Finding the sibling after which the dragging item should be placed
+            let nextSibling = siblings.find(sibling => {
+                const siblingRect = sibling.getBoundingClientRect();
+                return mousePos < siblingRect.top + siblingRect.height / 2;
+            });
+
+            // Inserting the dragging item before the found sibling
+            if (nextSibling) {
+                sortable_list.insertBefore(dragging_item, nextSibling);
+            } else {
+                sortable_list.appendChild(dragging_item);
+            }
+        }
+
+        const weight_list = document.getElementById('main-weight-inputs');
+        const grades_list = document.getElementById('main-grade-inputs');
+        const sessions_list = document.getElementById('session-rows-container');
+        const timeout_delay = 75;
+        for (let c_list of [weight_list, grades_list, sessions_list]) {
+            c_list.addEventListener("mousemove", throttle(function(e) {
+                initialize_sortable_list(e, this, false);
+            }, timeout_delay));
+            c_list.addEventListener("touchmove", throttle(function(e) {
+                initialize_sortable_list(e, this, true);
+            }, timeout_delay));
+        }
+
+
+        class AboutTab {
+            static async execute_open_subject(event, button) {
+                const subject_name = button.id;
+                await AboutTab.display_subject(subject_name);
+            }
+
+            static async display_subject(name) {
+                return new Promise((resolve, reject) => {
+                    let user_done = null;
+                    const subject_content = document.querySelector(`div[class="subject-content"][id="${name}"]`);
+                    subject_content.style.display = "block";
+                    
+                    GeneralUI.enable_interface(false);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                    // Add Listeners
+                    if (name != "welcome") {
+                        document.addEventListener('dblclick', () => {
+                            if (user_done != true) {
+                                user_done = true;
+                                resolve(user_done);
+                                clean_up(subject_content);
+                            }
+                        });
+                    }
+                    
+                    // Add Listeners
+                    const close_button = subject_content.querySelector('button[class="close-btn"]');
+                    close_button.addEventListener('click', () => {
+                        if (user_done != true) {
+                            user_done = true;
+                            resolve(user_done);
+                            clean_up(subject_content);
+                        }
+                    });
+                });
+
+                function clean_up(subject_content) {
+                    subject_content.style.display = "none";
+                    GeneralUI.enable_interface(true);
+                }
+            }
+        }
+
+
+        class SessionsTab {
+            static initialize_session_row(uuid) {
+                if (!uuid || uuid.trim() == "") {
+                    console.error("No uuid provided for session row.");
+                    return;
+                }
+
+                // Create Parent Div
+                const new_session_div = document.createElement('div');
+                new_session_div.className = 'session-row';
+                new_session_div.id = uuid;
+
+                // Give the subclass some elements
+                new_session_div.innerHTML = `
+                <div class="handle" id="move-handle">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>`;
+                const handle = new_session_div.querySelector('div[id="move-handle"]');
+
+                const save_uuid_order = () => {
+                    const session_rows = document.getElementById('session-rows-container');
+
+                    const uuid_order = Array.from(session_rows.children).map(x => x.id);
+                    const current = DataManagement.get_local_variable('grade-sessions');
+
+                    if (current) {
+                        const current_obj = JSON.parse(current);
+                        const new_obj = {};
+                        for (let uuid of uuid_order) {
+                            new_obj[uuid] = current_obj[uuid];
+                        }
+                        localStorage.setItem('grade-sessions', JSON.stringify(new_obj));
+                    }
+                }
+
+                // Events
+                let previous_index = null;
+                const stopDrag = () => {
+                    if (new_session_div.classList.contains("dragging") == false) { return; }
+                    new_session_div.classList.remove("dragging"); 
+                    document.body.style.cursor = '';
+
+                    // End Drag Animation
+                    new_session_div.style.animation = "end-row-moving-animation 0.2s";
+                    new_session_div.addEventListener("animationend", () => {
+                        new_session_div.style.animation = "";
+                    });
+                    save_uuid_order();
+                    GeneralUI.disable_buttons(false);
+                };
+                const startDrag = () => {
+                    previous_index = Array.from(new_session_div.parentNode.children).indexOf(new_session_div);
+                    const prompts = new_session_div.querySelectorAll('div[class="advisery-prompt"]');
+                    for (let prompt of prompts) { prompt.remove(); }
+                    new_session_div.classList.add("dragging");
+                    document.body.style.cursor = 'grabbing';
+                    GeneralUI.disable_buttons(true);
+                };
+
+                // Mouse Events
+                handle.addEventListener("mousedown", () => { startDrag(); });
+                document.addEventListener("mouseup", () => { stopDrag(); });
+
+                // Touch Events
+                handle.addEventListener("touchend", () => { stopDrag(); });
+                handle.addEventListener("touchcancel", () => { stopDrag(); });
+
+                handle.addEventListener("touchstart", () => { startDrag(); });
+
+                // Create contents
+                const content = document.createElement('div');
+                content.className = "session-content";
+                new_session_div.appendChild(content);
+
+                // Create main subclass div
+                const main_row = document.createElement('div');
+                main_row.className = "input-row";
+                main_row.id = "main";
+
+                main_row.innerHTML = `
+                    <button class="default-btn" id="edit-btn" onclick="SessionsTab.execute_edit_session(event, this)" >Edit</button>
+                    <input type="text" id="name-field" disabled="true" placeholder="Name of the save:">
+                `;
+
+                // Create additional load session button for this subclass
+                const load_session_button = document.createElement('button');
+                load_session_button.className = "default-btn"; load_session_button.id = "load-btn"; load_session_button.innerText = "Load";
+                load_session_button.addEventListener("click", function() { SessionsTab.execute_load_session(event, this); });
+                main_row.appendChild(load_session_button);
+                
+                // Create edit subclass div
+                const edit_row = document.createElement('div');
+                edit_row.className = "input-row";
+                edit_row.id = "edit-menu";
+                edit_row.style.display = "none";
+
+                // Give the subclass some elements
+                edit_row.innerHTML = `
+                    <button class="default-btn" id="override-btn" onclick="SessionsTab.execute_toggle_button(event, this)" style="display: none; background-color: var(--btn-color-1)">Override</button>
+                    <button class="default-btn" id="remove-btn" onclick="SessionsTab.execute_toggle_button(event, this)" style="display: none; background-color: var(--btn-color-1)">Remove</button>
+                    <button class="default-btn" id="confirm-btn" onclick="SessionsTab.execute_confirm_edits(event, this);" style="display: none">Confirm</button>
+                `;
+
+                // Append all the elements respectively
+                content.appendChild(main_row);
+                content.appendChild(edit_row);
+
+                return new_session_div;
+            }
+
+
+            static async execute_load_session(event, button) {
+                if (DataManagement.is_saving_enabled() == false) {
+                    return;
+                }
+                if (button == null) {
+                    console.error("No button provided.");
+                    return;
+                }
+
+                const session_row = button.parentElement.parentElement.parentElement;
+                const uuid = session_row.id;
+
+                if (await MenuSystem.check_for_unsaved() == true) {
+                    return;
+                }
+                GeneralUI.clear_prompts();
+                
+                DataManagement.load_grades_data(uuid);
+                // Cancel underlined save tab because unsaved changes have been either ignored or saved.
+                const save_tab = document.getElementById('tabs').querySelector('a[id="save"]');
+                save_tab.style.textDecoration = "none";
+                MenuSystem.close_tab('sessions');
+                MenuSystem.unhighlight_all_tabs();
+            }
+        
+            
+            static execute_toggle_button(event, button) {
+                if (button == null) {
+                    console.error("No button provided.");
+                    return;
+                }
+
+                const other_id = (button.id == "override-btn" ? "remove-btn" : "override-btn");
+                const other_button = button.parentElement.querySelector(`button[id="${other_id}"]`);
+
+                if (other_button.getAttribute("selected") == "true") {
+                    other_button.setAttribute("selected", "false");
+                    other_button.style.backgroundColor = "var(--btn-color-1)";
+                }
+
+                if (button.getAttribute("selected") == "true") {
+                    button.setAttribute("selected", "false");
+                    button.style.backgroundColor = "var(--btn-color-1)";
+                }
+                else {
+                    button.setAttribute("selected", "true");
+                    button.style.backgroundColor = "var(--btn-selected-color)";
+                }
+            }
+
+
+            static enable_editing_session_row(session_element) {
+                if (DataManagement.is_saving_enabled() == false) {
+                    return;
+                }
+                if (session_element == null) {
+                    console.error("No session element provided.");
+                    return;
+                }
+
+                // Disable the two buttons
+                const new_session_button = document.getElementById('create-new-session');
+                GeneralUI.disable_element(new_session_button, true);
+                const clear_session_button = document.getElementById('clear-interface');
+                GeneralUI.disable_element(clear_session_button, true);
+
+                // Get the elements
+                const main_row = session_element.querySelector('div[id="main"]');
+                const edit_row = session_element.querySelector('div[id="edit-menu"]');
+
+                const edit_button = main_row.querySelector('button[id="edit-btn"]');
+                const load_button = main_row.querySelector('button[id="load-btn"]');
+                const name_field = main_row.querySelector('input[type="text"][id="name-field"]');
+
+                // Disable/Enable Main Row Element
+                edit_button.style.display = 'none';
+                load_button.style.display = 'none';
+                
+                name_field.disabled = false;
+
+                // Enable/Disable Edit Row Buttons
+                for (let button of edit_row.querySelectorAll('button')) {
+                    button.style.display = 'block';
+                }
+                edit_row.style.display = 'flex';
+
+                // Disable other buttons in the session rows
+                SessionsTab.disable_session_row_interactions(true, session_element);
+            }
+
+            static disable_session_row_interactions(disable, exception = null) {
+                const session_rows = document.getElementById('session-rows-container').querySelectorAll('div[class="session-row"]');
+                for (let session_row of session_rows) {
+                    if (session_row != exception) {
+                        const buttons = session_row.querySelectorAll('button');
+                        for (let b of buttons) {
+                            GeneralUI.disable_element(b, disable);
+                        }
+                    }
+
+                    const handle = session_row.querySelector('div[id="move-handle"]');
+                    handle.style.display = disable ? 'none' : 'block';
+
+                    if (!disable) 
+                    { exception.classList.remove('session-row-editing'); }
+                    else
+                    { exception.classList.add('session-row-editing') }
+                }
+            }
+            
+            
+            static execute_edit_session(event, button) {
+                if (DataManagement.is_saving_enabled() == false) {
+                    return;
+                }
+                if (button == null) {
+                    console.error("No button provided.");
+                    return;
+                }
+
+                const session_row = button.parentElement.parentElement.parentElement;
+                if (SessionsTab.check_for_current_editing() == null) {
+                    SessionsTab.enable_editing_session_row(session_row, true);
+                }
+            }
+
+
+            static check_for_current_editing() {
+                const session_rows = document.getElementById('session-rows-container').querySelectorAll('div[class="session-row"]');
+                for (let session_row of session_rows) {
+                    if (session_row.querySelector('div[id="edit-menu"]').style.display != "none") {
+                        return session_row;
+                    }
+                }
+                return null;
+            }
+
+
+            static async execute_clear_current_interface(event) {
+                if (DataManagement.is_saving_enabled() == false) {
+                    return;
+                }
+
+                // Ask user if they really want to clear 
+                const confirmation = await GeneralUI.force_get_user_input("Are you sure you want to clear the current session? This cannot be undone.", "confirmation");
+                if (confirmation == false) {
+                    return;
+                }
+
+                DataManagement.clear_interface();
+                const currently_loaded_session_uuid = DataManagement.get_local_variable('current-loaded-session');
+                if (currently_loaded_session_uuid) {
+                    DataManagement.save_current_grades_data(currently_loaded_session_uuid, null, true);
+                    let sessions = DataManagement.get_local_variable('grade-sessions');
+                    sessions = JSON.parse(sessions);
+                    const name = sessions[currently_loaded_session_uuid]['name'];
+                    DataManagement.update_headers_and_interface(name);
+                }
+            }
+        
+            
+            static async execute_add_new_session(event) {
+                if (DataManagement.is_saving_enabled() == false) {
+                    return;
+                }
+
+                const name = await GeneralUI.force_get_user_input("Enter the name of the new session", "get-text");
+                if (name == null) { return; }
+                const name_approval = DataManagement.get_name_approval(name.trim());
+                switch (name_approval) {
+                    case "empty":
+                    GeneralUI.create_warning_prompt("Please enter a name for the save.", document.getElementById('session-configurations'), -1, true);
+                        return;
+                    case "long":
+                    GeneralUI.create_warning_prompt("The name is too long (150+ characters), please shorten it.", document.getElementById('session-configurations'), -1, true);
+                        return;
+                    case "short":
+                        GeneralUI.create_warning_prompt("The name is too short, please include at least 2 characters.", document.getElementById('session-configurations'), -1, true);
+                        return;
+                    case null:
+                        return;
+                }
+
+                const other_uuid = DataManagement.check_for_existing_name(name);
+                if (other_uuid) {
+                    const confirmation = await GeneralUI.force_get_user_input("A session with that name already exists, would you like to replace it or choose a different name?", "confirmation");
+                    if (confirmation == false) {
+                        return;
+                    }
+                }
+
+                if (await MenuSystem.check_for_unsaved() == true) {
+                    return;
+                }
+
+                // Save a new blank session!
+                DataManagement.clear_interface();
+                const results = DataManagement.save_current_grades_data(other_uuid, name, true);
+                const state = results[0]; const used_uuid = results[1]
+
+                if (state == "override") {
+                    GeneralUI.create_info_prompt(`Successfully overrided ${name} with the data!`, document.getElementById('session-configurations'), -1, true);
+                    DataManagement.load_grades_data(used_uuid, true);
+                    MenuSystem.close_tab('sessions');
+                    MenuSystem.unhighlight_all_tabs();
+                }
+                else if (state == "success") {
+                    GeneralUI.create_info_prompt(`Successfully created a new session as '${name}'`, document.getElementById('session-configurations'), -1, true);
+                    DataManagement.load_grades_data(used_uuid, true);
+                    MenuSystem.close_tab('sessions');
+                    MenuSystem.unhighlight_all_tabs();
+                }
+                else {
+                    console.error("Failed to save new grades session.");
+                }
+
+                SessionsTab.populate_session_rows();
+            }
+
+
+            static async execute_confirm_edits(event, button) {
+                if (DataManagement.is_saving_enabled() == false) {
+                    return;
+                }
+                if (button == null) {
+                    console.error("No button provided.");
+                    return;
+                }
+
+                const session_row = button.parentElement.parentElement.parentElement;
+                // Save the edits
+                await SessionsTab.save_session_edits(session_row); // Repopulates Grades Anyways
+            }
+
+
+            static async save_session_edits(session_row) {
+                // Do not continue if saving is disabled
+                if (DataManagement.is_saving_enabled() == false) {
+                    return;
+                }
+
+                // Get the variables
+                const uuid = session_row.id;
+                let name = session_row.querySelector('input[type="text"][id="name-field"]').value;
+                const remove_button = session_row.querySelector('button[id="remove-btn"]');
+                const remove = remove_button.getAttribute("selected") == "true";
+                const override_button = session_row.querySelector('button[id="override-btn"]');
+                const override = override_button.getAttribute("selected") == "true";
+
+                // Check & confirm with user if the session should be removed
+                if (remove == true) {
+                    const result = await GeneralUI.force_get_user_input("Are you sure you would like to delete this session?", "confirmation");
+                    if (result == false) {
+                        remove_button.style.backgroundColor = "var(--btn-color-1)";
+                        remove_button.setAttribute("selected", "false");
+                        return;
+                    }
+
+                    // Remove the session
+                    DataManagement.remove_session_save(uuid);
+                    SessionsTab.populate_session_rows();
+
+                    // Enable the two buttons
+                    const new_session_button = document.getElementById('create-new-session');
+                    GeneralUI.disable_element(new_session_button, false);
+                    const clear_session_button = document.getElementById('clear-interface');
+                    GeneralUI.disable_element(clear_session_button, false);
+                    return;
+                }
+
+                // Check if name is approriate
+                name = name.trim();
+                const name_approval = DataManagement.get_name_approval(name);
+                switch (name_approval) {
+                    case "empty":
+                        GeneralUI.create_warning_prompt("Please enter a name for the save.", session_row, -1, true);
+                        return;
+                    case "long":
+                        GeneralUI.create_warning_prompt("The name is too long, please shorten it.", session_row, -1, true);
+                        return;
+                    case "short":
+                        GeneralUI.create_warning_prompt("The name is too short, please include at least 2 characters.", session_row, -1, true);
+                        return;
+                    case null:
+                        return;
+                }
+
+                const other_uuid = DataManagement.check_for_existing_name(name);
+                if (other_uuid != null && other_uuid != uuid) {
+                    const result = await GeneralUI.force_get_user_input("A session with that name already exists, would you like to replace it?", "confirmation");
+                    if (result == false) {
+                        SessionsTab.populate_session_rows();
+                        return;
+                    }
+                }
+
+                // Check with the user if the session should be overrided with current data
+                if (override == true) {
+                    const result = await GeneralUI.force_get_user_input("Are you sure you want to override this session with your current data?", "confirmation");
+                    if (result == false) {
+                        override_button.style.backgroundColor = "var(--btn-color-1)";
+                        override_button.setAttribute("selected", "false");
+                        return;
+                    }
+                }
+
+                // Save the session                
+                await DataManagement.save_current_grades_data(uuid, name, override)[0];
+
+                // Autosave tab
+                if (override == true) {
+                    const save_tab = document.getElementById('tabs').querySelector('a[id="save"]');
+                    save_tab.style.textDecoration = "none";
+                }
+
+                SessionsTab.populate_session_rows();
+                
+                const currently_loaded_session_uuid = DataManagement.get_local_variable('current-loaded-session');
+                if (currently_loaded_session_uuid == uuid) {
+                    DataManagement.update_headers_and_interface(name);
+                }
+
+                // Enable the two buttons
+                const new_session_button = document.getElementById('create-new-session');
+                GeneralUI.disable_element(new_session_button, false);
+                const clear_session_button = document.getElementById('clear-interface');
+                GeneralUI.disable_element(clear_session_button, false);
+            }
+        
+            
+            static populate_session_rows() {
+                const sessions_container = document.getElementById('session-rows-container');
+                // Remove all exists sessions rows
+                while (sessions_container.firstChild) {
+                    sessions_container.removeChild(sessions_container.firstChild);
+                }
+                // Check if saving is enabled
+                if (DataManagement.is_saving_enabled() == false) {
+                    return;
+                }
+
+                // Load all saved sessions
+                let sessions = DataManagement.get_local_variable('grade-sessions');
+                if (sessions == null) {
+                    console.log("No saved sessions found.");
+                    return;
+                }
+                sessions = JSON.parse(sessions);
+                for (let [uuid, value] of Object.entries(sessions)) {
+                    const new_session = SessionsTab.initialize_session_row(uuid);
+                    new_session.querySelector('[id="name-field"]').value = value['name'];
+                    sessions_container.appendChild(new_session);
+                }
+            }
+        } 
+
+        // FOR WHO EVER IS LOOKING AT THIS, data is saved locally on the user's browser. (No data is sent to any server)
+        // All code is ran on the client side. Even the calculations are done on the client side.
+        // Now, get out of here and go do your work! 😄😄😄
+        class Help {
+            static execute_toggle_help() {
+                const help_content = document.getElementById('help-content');
+                if (help_content.style.maxHeight) {
+                    help_content.style.maxHeight = null;
+                } else {
+                    help_content.style.maxHeight = help_content.scrollHeight + "px";
+                }
+            }
+        }
+
+
+        class WeightUI {
+            static initialize_weight_row(name="", value="") {
+                let new_value = value.replaceAll('%', '');
+                new_value = Calculate.isNumeric(new_value) ? new_value + "%" : new_value;
+
+                const new_row = document.createElement('div');
+                new_row.id = 'weight';
+                new_row.className = 'weight-row';
+
+                const primary_div = document.createElement('div');
+                primary_div.className = 'input-row';
+                primary_div.id = 'primary';
+                primary_div.style.display = 'flex';
+                new_row.append(primary_div);
+
+                primary_div.innerHTML = `
+                <div class="handle" id="move-handle">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+                `;
+                const handle = primary_div.querySelector('div[id="move-handle"]');
+
+                const inner_div = document.createElement('div');
+                inner_div.className = 'input-row';
+                inner_div.id = 'data';
+                primary_div.appendChild(inner_div);
+                
+                // Events
+                let previous_index = null;
+                const stopDrag = () => {
+                    if (new_row.classList.contains("dragging") == false) { return; }
+                    new_row.classList.remove("dragging"); 
+                    if (previous_index != Array.from(new_row.parentNode.children).indexOf(new_row)) {
+                        DataManagement.autosave_session();
+                    }
+                    document.body.style.cursor = '';
+
+                    // End Drag Animation
+                    new_row.style.animation = "end-row-moving-animation 0.2s";
+                    new_row.addEventListener("animationend", () => {
+                        new_row.style.animation = "";
+                    });
+
+                    GeneralUI.disable_buttons(false);
+                };
+                const startDrag = () => {
+                    previous_index = Array.from(new_row.parentNode.children).indexOf(new_row);
+                    const prompts = new_row.querySelectorAll('div[class="advisery-prompt"]');
+                    for (let prompt of prompts) { prompt.remove(); }
+                    document.body.style.cursor = 'grabbing';
+                    new_row.classList.add("dragging");
+                    GeneralUI.disable_buttons(true);
+                };
+
+                // Mouse Events
+                handle.addEventListener("mousedown", () => { startDrag(); });
+                document.addEventListener("mouseup", () => { stopDrag(); });
+
+                // Touch Events
+                handle.addEventListener("touchend", () => { stopDrag(); });
+                handle.addEventListener("touchcancel", () => { stopDrag(); });
+
+                handle.addEventListener("touchstart", () => { startDrag(); });                
+
+                inner_div.innerHTML = `
+                    <input type="text" id="name" onchange="WeightUI.execute_weight_input_changed(this)" placeholder="Category Name" value="${name}" >
+                    <input type="text" id="value" onchange="WeightUI.execute_weight_input_changed(this)" placeholder="Weight Value: %" value="${new_value}">
+                `;
+
+                const remove_button = document.createElement('button');
+                remove_button.id = "remove_weight_button";
+                remove_button.className = "remove-btn";
+                remove_button.innerText = "Remove";
+                inner_div.appendChild(remove_button);
+
+                remove_button.addEventListener("dblclick", function() { WeightUI.execute_remove_weight_row(this); });                
+
+                // Check for proper inputs
+                for (let input of inner_div.querySelectorAll('input')) {
+                    WeightUI.check_for_proper_input(input, false);
+                }
+
+                return new_row;
+            }
+            
+            static execute_add_weight_row() {
+                const input_limit = 25;
+
+                const weight_inputs = document.getElementById('main-weight-inputs');
+                const secondary_weights_container = document.getElementById('secondary-weights-container');
+                if (weight_inputs.children.length >= input_limit) {
+                    GeneralUI.create_warning_prompt(`You have reached the maximum number of weight categories (${input_limit}).`, secondary_weights_container, -1, true);
+                    return;
+                }
+                else if (weight_inputs.children.length > 15){
+                    GeneralUI.create_warning_prompt("How many more weight categories are you going to enter?! " + `(${weight_inputs.children.length + 1})`, secondary_weights_container, -1, true);
+                }
+
+                const new_row = WeightUI.initialize_weight_row();
+                new_row.style.animation = "row-appear-animation 0.28s";
+                new_row.addEventListener("animationend", () => {
+                    new_row.style.animation = "";
+                });
+                weight_inputs.appendChild(new_row);
+            }
+
+
+            static execute_remove_weight_row(element) {
+                element.parentElement.parentElement.parentElement.remove(); 
+                for (let input of element.parentElement.querySelectorAll('input')) {
+                    if (input.value && input.value != "") {
+                        DataManagement.autosave_session();
+                        Calculate.auto_calculate_grade();
+                        return;
+                    }
+                }
+            }
+
+
+            static execute_weight_input_changed(element) {
+                WeightUI.check_for_proper_input(element)
+                DataManagement.autosave_session();
+                Calculate.auto_calculate_grade();
+            }
+
+
+            static check_for_proper_input(element, alert=true) {
+                let element_value = element.value;
+                let correct = true;
+                let weight_div = element.parentElement.parentElement.parentElement;
+                if (element.id == "name") {
+                    // Check if the name is empty
+                    if (element_value == "") {
+                        correct = false;
+                        if (alert) { GeneralUI.create_warning_prompt("Weight category must have a name <b>Excluding from weights!</b>", weight_div, -1, true); }
+                    }
+                } 
+                else if (element.id == "value") {
+                    // Check if points earned is empty
+                    if (element_value == "") {
+                        if (alert) { GeneralUI.create_warning_prompt("Make sure the assignment above has a percentage! <b>Excluding from weights!</b>", weight_div, -1, true); }
+                        correct = false;
+                    } 
+                    // Check if points earned is not a number
+                    else {
+                        element_value = element_value.replace('%', '');
+                        if (!Calculate.isNumeric(element_value)) {
+                            if (alert) { GeneralUI.create_warning_prompt("Make sure the value is a percentage! <b>Excluding from weights!</b>", weight_div, -1, true); }
+                            correct = false;
+                        }
+                    }
+                }
+
+                element.style.backgroundColor = (correct == true ? "var(--color-4)" : "var(--color-5)");
+                element.style.borderColor = (correct == true ? "var(--border-color-1)" : "var(--border-color-2)");
+                return correct;
+            }
+
+            /**
+            * Compiles and returns a list of weight names and values from the input fields.
+            * @param {boolean} compiling_for_save - Determines if the weights are being compiled for saving.
+            * @param {boolean} enable_change_first - Determines if the first weight category should be changed if necessary.
+            * 
+            * @returns {Object} A list of weight names and values.
+            */
+            static compile_weights_from_elements(compiling_for_save = false, enable_change_first = true) {
+                const weight_inputs = document.getElementById('main-weight-inputs');
+
+                let weights = {};
+
+                const secondary_weights_container = document.getElementById('secondary-weights-container');
+                for (let div of weight_inputs.children) {
+                    if (div.id != "weight") { continue; }
+                    let name = div.querySelector('input[type="text"][id="name"]').value;
+                    let value = div.querySelector('input[type="text"][id="value"]').value;
+                    
+                    if (compiling_for_save == false) {
+                        if (name == "" || value == "") { continue; }
+                        name = name.trim();
+
+                        value = value.replace('%', '');
+                        value = value.trim();
+                        try {
+                            value = parseFloat(value);
+                        }
+                        catch (e) {
+                            console.error('Failed to parse weight value: ', e);
+                            continue;
+                        }
+                        if (value <= 1) {
+                            GeneralUI.create_info_prompt("A weight category value is <b>very low.</b> Consider changes this if necessary!", secondary_weights_container, -1, true);
+                        }
+                    }
+                    else {
+                        if (name == "" && value == "") { continue; }
+                        name = name.trim();
+                    } 
+                    weights[name] = value;
+                }
+
+                if (Object.keys(weights).length == 0 && enable_change_first == true) {
+                    weights["Assignments"] = 100;
+
+                    if (weight_inputs.children.length == 0) {
+                        const new_row = WeightUI.initialize_weight_row();
+                        weight_inputs.appendChild(new_row);
+                    }
+                    weight_inputs.children[0].querySelector('input[type="text"][id="name"]').value = "Assignments";
+                    weight_inputs.children[0].querySelector('input[type="text"][id="value"]').value = "100%";
+                    for (let input of weight_inputs.children[0].querySelectorAll('input')) {
+                        input.style.backgroundColor = "var(--color-4)";
+                        input.style.borderColor = "var(--border-color-1)";
+                    }
+
+                    GeneralUI.create_info_prompt("No weight categories were inputted. Defaulting to 100% for 'Assignments'.", secondary_weights_container, -1, true);
+                }
+
+                return weights;
+            }
+        }
+        
+
+        class PasteData {
+            static async execute_paste_from_clipboard() {
+                await PasteData.paste_text_from_clipboard();
+            }
+
+
+            static execute_pasted_in_field(button) {
+                const clipboard_data = button.parentElement.querySelector('textarea[type="text"][id="paste-text-field"]').value;
+                if (clipboard_data) {
+                    GradesUI.input_grades(clipboard_data);
+                }
+                else 
+                {
+                    const paste_grades_section = document.getElementById('paste-grades-section');
+                    GeneralUI.create_warning_prompt("The text you inputted into the text field is not valid!", paste_grades_section, -1, false);
+                }
+            }
+
+
+            static execute_display_alt_paste() {
+                const paste_alt_row = document.getElementById('paste-alt');
+                paste_alt_row.style.display = "flex";
+                GeneralUI.scroll_element_to_middle_of_screen(paste_alt_row);
+            }
+
+            /**
+            * Gets the text from the clipboard and pastes it into the grades input. 
+            */
+            static async paste_text_from_clipboard() {
+                const paste_grades_section = document.getElementById('paste-grades-section');
+
+                if (!navigator.clipboard) {
+                    console.error('Clipboard API not supported');
+                    GeneralUI.create_warning_prompt("Looks like you have blocked this website of your clipboard privilages. <b>Failed to get clipboard.</b><br>You may use this alternate-manual paste input instead.", paste_grades_section, -1, false);
+                    PasteData.execute_display_alt_paste();
+                    alert('Clipboard API not supported');
+                    return;
+                }
+
+                if (!navigator.clipboard.readText) {
+                    console.error('Clipboard API not allowed.');
+                    GeneralUI.create_warning_prompt("Looks like you have blocked this website of your clipboard privilages. <b>Failed to get clipboard.</b><br>You may use this alternate-manual paste input instead.", paste_grades_section, -1, false);
+                    PasteData.execute_display_alt_paste();
+                    alert('Clipboard API not allowed.');
+                    return;
+                }
+
+                let clipboard_data = null;
+                try {
+                    clipboard_data = await navigator.clipboard.readText();
+                } 
+                catch (err) {
+                    console.error('Failed to read clipboard contents: ', err);
+                    GeneralUI.create_warning_prompt("That's weird, something unexpected happened when fetching your clipboard data? <b>Failed to get data from clipboard.</b><br>You may use this alternate-manual paste input instead.", paste_grades_section, -1, false);
+                    PasteData.execute_display_alt_paste();
+                    alert('Failed to read clipboard contents. Please try again.');
+                    return;
+                }
+
+                if (clipboard_data) {
+                    GradesUI.input_grades(clipboard_data);
+                }
+                else 
+                {
+                    GeneralUI.create_warning_prompt("You do not have any text copied. Make sure you are copying correctly!", paste_grades_section, -1, false);
+                }
+            }
+        }
+        
+        document.querySelector('.paste-btn').addEventListener('click', PasteData.execute_paste_from_clipboard);
+
+
+        class GradesUI {
+            static update_percentage_display(row) {
+                if (row == null) {
+                    console.error("No row provided.");
+                    return;
+                }
+                if (DataManagement.get_local_variable('display-grade-percentage') != 'true') {
+                    return;
+                }
+                let min = row.querySelector('input[type="text"][id="min"]').value;
+                let max = row.querySelector('input[type="text"][id="max"]').value;
+                const percent_row = row.querySelector('input[type="text"][id="percentage"]');
+                let percent = '';
+
+                min = min.replaceAll(',', ''); max = max.replaceAll(',', '');
+                if (Calculate.isNumeric(min) && Calculate.isNumeric(max)) {
+                    min = parseFloat(min); max = parseFloat(max);
+
+                    if (max == 0) {
+                        percent = "*%"
+                    }
+                    else if (max == 0 && min == 0) {
+                        percent = "0%";
+                    }
+                    else if (min.toString() != "" && max.toString() != "") {
+                        percent = Math.round(min / max * 100).toString() + "%";
+                    }
+                    else {
+                        percent = "*%";
+                    }
+                }
+                else {
+                    percent = "%";
+                }
+                
+                percent_row.value = percent;
+            }
+
+            /**
+            * Creates and returns the structure of a grade category row.
+            * 
+            * @param {string} name - name of the grade.
+            * @param {string | number} min - min points of the grade.
+            * @param {string | number} max - max points of the grade.
+            * @param {string} weight - weight category for the grade.
+            * 
+            * @returns {HTMLElement} A div element containing the grade category row.
+            */
+            static initialize_grade_row(name, min, max, weight) {
+                // Master Parent Div
+                const new_row = document.createElement('div');
+                new_row.id = "grade";
+                new_row.className = 'grade';
+
+                // Houses the main input fields and the handle
+                const primary_div = document.createElement('div');
+                primary_div.className = 'input-row';
+                primary_div.id = 'primary';
+                primary_div.style.display = 'flex';
+                new_row.append(primary_div);
+
+                primary_div.innerHTML = `
+                <div class="handle" id="move-handle">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+                `;
+
+                const handle = primary_div.querySelector('div[id="move-handle"]');
+
+                const inner_div = document.createElement('div');
+                inner_div.className = 'input-row';
+                inner_div.id = 'data';
+                primary_div.appendChild(inner_div);
+
+                // Events
+                let previous_index = null;
+                const stopDrag = () => {
+                    if (new_row.classList.contains("dragging") == false) { return; }
+                    new_row.classList.remove("dragging"); 
+                    if (previous_index != Array.from(new_row.parentNode.children).indexOf(new_row)) {
+                        DataManagement.autosave_session();
+                    }
+                    document.body.style.cursor = '';
+
+                    // End Drag Animation
+                    new_row.style.animation = "end-row-moving-animation 0.2s";
+                    new_row.addEventListener("animationend", () => {
+                        new_row.style.animation = "";
+                    });
+
+                    GeneralUI.disable_buttons(false);
+                };
+                const startDrag = () => {
+                    previous_index = Array.from(new_row.parentNode.children).indexOf(new_row);
+                    const prompts = new_row.querySelectorAll('div[class="advisery-prompt"]');
+                    for (let prompt of prompts) { prompt.remove(); }
+                    new_row.classList.add("dragging");
+                    document.body.style.cursor = 'grabbing';
+                    GeneralUI.disable_buttons(true);
+                };
+
+                // Mouse Events
+                handle.addEventListener("mousedown", () => { startDrag(); });
+                document.addEventListener("mouseup", () => { stopDrag(); });
+
+                // Touch Events
+                handle.addEventListener("touchend", () => { stopDrag(); });
+                handle.addEventListener("touchcancel", () => { stopDrag(); });
+
+                handle.addEventListener("touchstart", () => { startDrag(); });  
+
+                // Main Input Fields
+                inner_div.innerHTML = `
+                    <input type="text" placeholder="Assignment Name" id="name" value="${name}" onchange="GradesUI.execute_grade_input_change(this)">
+                    <input type="text" placeholder="Points Earned" id="min" value="${min}" onchange="GradesUI.execute_grade_input_change(this)">
+                    <input type="text" placeholder="Max Points" id="max" value="${max}" onchange="GradesUI.execute_grade_input_change(this)">
+                    <input type="text" placeholder="Weight Category" id="weight" value="${weight}" onchange="GradesUI.execute_grade_input_change(this)">
+                `;
+                
+                // Percentage Display
+                const percentage_display = document.createElement('input');
+                percentage_display.type = "text";
+                percentage_display.id = "percentage";
+                percentage_display.style.maxWidth = "40px";
+                percentage_display.style.textAlign = "center";
+                GeneralUI.disable_element(percentage_display, true);
+                percentage_display.style.display = DataManagement.get_local_variable('display-grade-percentage') == 'true' ? 'block' : 'none';
+                inner_div.appendChild(percentage_display);
+                GradesUI.update_percentage_display(new_row);
+
+                // Remove Button
+                let remove_button = document.createElement('button');
+                remove_button.id = "remove_grade_button";
+                remove_button.className = "remove-btn";
+                remove_button.innerText = "Remove";
+                inner_div.appendChild(remove_button);
+
+                remove_button.addEventListener("dblclick", function() { GradesUI.execute_remove_grade_row(this); });
+
+                // Check for proper inputs
+                for (let input of inner_div.querySelectorAll('input')) {
+                    GradesUI.check_for_proper_input(input, false);
+                }
+
+                return new_row;
+            }
+
+
+            static execute_add_grade_row() {
+                const grade_section = document.getElementById("input-grades-section");
+                const grade_inputs = grade_section.querySelector('[id="main-grade-inputs"]');
+
+                let last_weight = "";
+                const weights = WeightUI.compile_weights_from_elements(false, false);
+                if (Object.keys(weights).length == 1) {
+                    last_weight = Object.keys(weights)[0];
+                }
+
+                const new_row = GradesUI.initialize_grade_row("", "", "", last_weight);
+                new_row.style.animation = "row-appear-animation 0.35s";
+                new_row.addEventListener("animationend", () => {
+                    new_row.style.animation = "";
+                });
+                grade_inputs.appendChild(new_row);
+            }
+
+
+            static execute_remove_grade_row(element) {
+                element.parentElement.parentElement.parentElement.remove(); 
+                for (let input of element.parentElement.querySelectorAll('input')) {
+                    if (input.value && input.value != "") {
+                        DataManagement.autosave_session();
+                        Calculate.auto_calculate_grade();
+                        return;
+                    }
+                }
+            }
+            
+
+            static execute_grade_input_change(element) {
+                GradesUI.update_percentage_display(element.parentElement);
+                GradesUI.check_for_proper_input(element, true);
+                DataManagement.autosave_session();
+                Calculate.auto_calculate_grade();
+            }
+
+            /**
+            * Checks if an element has the correct input.
+            * 
+            * @param {HTMLElement} element - input html element.
+            * @param {boolean} alert - if user should recieve an alert or not about a mistake.
+            * 
+            * @returns {boolean} True if input is correct, false otherwise.
+            */
+            static check_for_proper_input(element, alert) {
+                let element_value = element.value;
+                let correct = true;
+                let grade_div = element.parentElement.parentElement.parentElement;
+
+                if (element.id == "name" && alert == true) {
+                    // Check if the name is empty
+                    if (element_value == "") {
+                        GeneralUI.create_warning_prompt("Make sure the assignment above has a name! NOT excluded from final grade.", grade_div, -1, true);
+                    }
+                } 
+                else if (element.id == "min") {
+                    // Check if points earned is empty
+                    if (element_value == "") {
+                        if (alert) { GeneralUI.create_warning_prompt("Make sure the assignment above has points earned! <b>Excluding from final grade!</b>", grade_div, -1, true); }
+                        correct = false;
+                    } 
+                    // Check if points earned is not a number
+                    else {
+                        const formated_string = element_value.replaceAll(",", "").trim();
+                        if (!Calculate.isNumeric(formated_string)) {
+                            if (alert && formated_string != "*") { GeneralUI.create_warning_prompt("Make sure the points earned is a number! <b>Excluding from final grade!</b>", grade_div, -1, true); }
+                            correct = false;
+                        }
+                    }
+                } 
+                else if (element.id == "max") {
+                    // Check if points earned is empty
+                    if (element_value == "") {
+                        if (alert) { GeneralUI.create_warning_prompt("Make sure the assignment above has a maximum points! <b>Excluding from final grade!</b>", grade_div, -1, true); }
+                        correct = false;
+                    } 
+                    // Check if points earned is not a number
+                    else if (!Calculate.isNumeric(element_value.replaceAll(",", "").trim())) {
+                        if (alert) { GeneralUI.create_warning_prompt("Make sure the maximum points is a number! <b>Excluding from final grade!</b>", grade_div, -1, true); }
+                        correct = false;
+                    }
+                } 
+                else if (element.id == "weight") {
+                    // Check if weight is empty
+                    element_value = element_value.trim();
+                    if (element_value == "") {
+                        if (alert) { GeneralUI.create_warning_prompt("Make sure the assignment above has a weight category! <b>Excluding from final grade!</b>", grade_div, -1, true); }
+                        correct = false;
+                    } 
+                    // Check if weight isn't a category
+                    else {
+                        const weights = WeightUI.compile_weights_from_elements();
+                        if (Object.keys(weights).indexOf(element_value) == -1) {
+                            if (alert) { GeneralUI.create_warning_prompt("The weight category in the assigment does not fit in with any of the avaliable ones! <b>Excluding from final grade!</b>", grade_div, -1, true); }
+                            correct = false;
+                        }
+                    }
+                }
+
+                element.style.backgroundColor = (correct == true ? "var(--color-4)" : "var(--color-5)");
+                element.style.borderColor = (correct == true ? "var(--border-color-1)" : "var(--border-color-2)");
+                return correct;
+            }
+
+            /**
+            * Populates the grades into the interface from clipboard_data.
+            * 
+            * @param {string} clipboard_data - text from clipboard.
+            */
+            static input_grades(clipboard_data) {
+                // Get data
+                const weights = WeightUI.compile_weights_from_elements();
+                let split_grade_book = clipboard_data.split("\n")
+                const grades = FocusPortal.compile_grades_from_paste(split_grade_book, weights);
+
+                // Display grades
+                if (grades.length == 0) {
+                    const paste_grades_section = document.getElementById('paste-grades-section');
+                    GeneralUI.create_warning_prompt("No grades found in from your text or clipboard, make sure you have the right thing copied/inputted!", paste_grades_section, -1, false);
+                    DataManagement.autosave_session();
+                    return;
+                }
+
+                // Clear current display
+                const grades_container = document.getElementById('main-grade-inputs');
+                while (grades_container.firstChild) {
+                    grades_container.removeChild(grades_container.firstChild);
+                }
+
+                grades.forEach((g, index) => {
+                    let name = g.name;
+                    let min = g.min;
+                    let max = g.max;
+                    const weight = g.weight_cat;
+
+                    const name_formatting = {
+                        ";": "&semi;",
+                        '"': '&quot;',
+                        "'": "&apos;",
+                        "`": "&grave;"
+                    }
+                    for (let [key, value] of Object.entries(name_formatting)) {
+                        name = name.replaceAll(key, value);
+                    }
+
+                    if (Number.isNaN(min)) {
+                        min = "*";
+                    }
+                    if (Number.isNaN(max)) {
+                        max = "*";
+                    }
+                    
+                    const new_row = GradesUI.initialize_grade_row(name, min, max, weight);
+
+                    grades_container.appendChild(new_row);
+                });
+
+                Calculate.calculate_grade();
+                DataManagement.autosave_session();
+            }
+
+            /**
+            * Compiles a list of grades from the input fields.
+            * 
+            * @param {Object} weights list.
+            * @param {boolean} compiling_for_save - if the grades are being compiled for saving.
+            */
+            static compile_grades_from_elements(weights, compiling_for_save = false, alert = true) {
+                const grades_container = document.getElementById('main-grade-inputs');
+                let grades = [];
+                
+                for (let i = 0; i < grades_container.children.length; i++) {
+                    const div = grades_container.children[i];
+                    if (div.id != "grade") {
+                        continue;
+                    }
+                    const data_div = div.querySelector('[id="data"]');
+
+                    const name_element = data_div.querySelector('input[type="text"][id="name"]');
+                    const min_element = data_div.querySelector('input[type="text"][id="min"]');
+                    const max_element = data_div.querySelector('input[type="text"][id="max"]');
+                    const weight_element = data_div.querySelector('input[type="text"][id="weight"]');
+
+                    let problem = false;
+                    if (compiling_for_save == false) {
+                        for (let x of [name_element, min_element, max_element, weight_element]) {
+                            if (GradesUI.check_for_proper_input(x, alert) == false) {
+                                problem = true;
+                            }
+                        }
+                    }
+                    
+                    if (problem == false) {
+                        const weight_val = weight_element.value.trim();
+                        const min_val = min_element.value.replaceAll(",", "");
+                        const max_val = max_element.value.replaceAll(",", "");
+
+                        grades.push({
+                            name: name_element.value,
+                            min: (compiling_for_save == true ? min_val : parseFloat(min_val)), 
+                            max: (compiling_for_save == true ? max_val : parseFloat(max_val)), 
+                            weight_cat: weight_val
+                        });
+                    }
+                }
+
+                return grades;
+            }
+
+            static execute_sort_grades(event, button) {
+                const ascending = button.getAttribute('state') == "asc";
+                GradesUI.sort_grades(button.id.replace("sort-", ""), ascending); 
+                GradesUI.close_sort_menu();
+            }
+        
+            static sort_grades(sort_type, ascending=true) {
+                const grades_container = document.getElementById('main-grade-inputs');
+                const weights = WeightUI.compile_weights_from_elements(true);
+                let grades = GradesUI.compile_grades_from_elements(weights, true, false);
+                const multiplier = ascending ? 1 : -1;
+
+                function sort_grades_list(array) {
+                    array.sort((a, b) => {
+                        const a_is_num = Calculate.isNumeric(a.min) && Calculate.isNumeric(a.max);
+                        const b_is_num = Calculate.isNumeric(b.min) && Calculate.isNumeric(b.max);
+                        if (!a_is_num && b_is_num) { return -1 * multiplier; }
+                        if (a_is_num && !b_is_num) { return 1 * multiplier; }
+                        if (a_is_num && b_is_num) {
+                            const a_grade = parseFloat(a.min) / parseFloat(a.max);
+                            const b_grade = parseFloat(b.min) / parseFloat(b.max);
+                            if (a_grade && !b_grade) { return 1 * multiplier; }
+                            if (!a_grade && b_grade) { return -1 * multiplier; }
+
+                            if (a_grade < b_grade) { return -1 * multiplier; }
+                            if (a_grade > b_grade) { return 1 * multiplier; }
+                        }
+                        return 0;
+                    });
+                }
+
+                switch (sort_type) {
+                    // Sort on alphabetical name order
+                    case "name":
+                        grades.sort((a, b) => {
+                            let a_name = a.name.toLowerCase();
+                            let b_name = b.name.toLowerCase();
+                            if (a_name === "" && b_name !== "") { return 1 * multiplier; }
+                            if (a_name !== "" && b_name === "") { return -1 * multiplier; }
+                            if (a_name < b_name) { return -1 * multiplier; }
+                            if (a_name > b_name) { return 1 * multiplier; }
+                            return 0;
+                        });
+                        break;
+                    
+                    // Sort on overall grade percentage value
+                    case "grade":
+                        sort_grades_list(grades);
+                        break;
+
+                    case "maxpoints":
+                        grades.sort((a, b) => {
+                            const a_is_num = Calculate.isNumeric(a.max);
+                            const b_is_num = Calculate.isNumeric(b.max);
+                            if (a_is_num && !b_is_num) { return 1 * multiplier; }
+                            if (!a_is_num && b_is_num) { return -1 * multiplier; }
+
+                            const a_max = parseFloat(a.max); const b_max = parseFloat(b.max);
+                            if (a_max < b_max) { return -1 * multiplier; }
+                            if (a_max > b_max) { return 1 * multiplier; }
+                            return 0;
+                        });
+                        break;
+                    
+                    // Sort by the order of weight categories based on element weight order
+                    case "weight":
+                        // Compile grades by weight categories
+                        let grades_by_weights = Object.keys(weights).reduce((acc, key) => {
+                            acc[key] = [];
+                            return acc;
+                        }, {});
+                        const undefined_grade_weights = [];
+                        if (ascending) { grades_by_weights = Object.fromEntries(Object.entries(grades_by_weights).reverse()); }
+
+                        grades.forEach((g, index) => {
+                            if (grades_by_weights[g.weight_cat]) {
+                                grades_by_weights[g.weight_cat].push(g);
+                            }
+                            else 
+                            {
+                                undefined_grade_weights.push(g);
+                            }
+                        });
+
+                        // Sort the individual grades in their respective weights by grade
+                        for (let [key, value] of Object.entries(grades_by_weights)) {
+                            sort_grades_list(value);
+                        }
+
+                        // Combine all the grades back together (weights + undefined)
+                        let new_grades = [];
+                        for (let [key, value] of Object.entries(grades_by_weights)) {
+                            new_grades = new_grades.concat(value);
+                        }
+                        new_grades = ascending ? undefined_grade_weights.concat(new_grades) : new_grades.concat(undefined_grade_weights);
+                        grades = new_grades;
+                        break;
+
+                    default: 
+                        console.error("Invalid sort type: ", sort_type);
+                        return;
+                }
+
+                // Remove grade elements in list
+                while (grades_container.firstChild) {
+                    grades_container.removeChild(grades_container.firstChild);
+                }
+                
+                // Repopulate the grades 
+                grades.forEach((g, index) => {
+                    const new_row = GradesUI.initialize_grade_row(g.name, g.min, g.max, g.weight_cat);
+                    grades_container.appendChild(new_row);
+                });
+
+                // Save the changes
+                DataManagement.autosave_session();
+                Calculate.auto_calculate_grade();
+            }
+
+            static close_sort_menu() {
+                const options = document.getElementById('sort-menu').querySelector('.input-row');
+                const sort_menu_button = document.getElementById('sort-menu-button');
+
+                options.style.display = "none";
+                sort_menu_button.style.backgroundColor = "var(--btn-color-1)";
+            }
+        
+            static execute_toggle_sort_menu(event, button) {
+                const options = document.getElementById('sort-menu').querySelector('.input-row');
+                if (options.style.display == "block") {
+                    GradesUI.close_sort_menu();
+                } else {
+                    options.style.display = "block";
+                    for (let option of options.children) {
+                        option.style.animation = "sort-appear-animation 0.4s ";
+                    }
+                }
+            }
+
+
+            static async execute_open_sorting_help(event) {
+                await AboutTab.display_subject("sorting");
+            }
+        }
+
+
+        class Calculate {
+            static execute_calculate_grade() {
+                Calculate.calculate_grade();
+            }
+
+            /**
+             * Automatically calculates the grade after input changes, if the automatic-calculate setting is enabled.
+             */
+            static auto_calculate_grade() {
+                let auto_calculate = DataManagement.get_local_variable('automatic-calculate');
+                if (auto_calculate == 'true') {
+                    const weights = WeightUI.compile_weights_from_elements(false, false);
+                    if (Object.keys(weights).length > 0) {
+                        Calculate.calculate_grade(false);
+                    }
+                }
+            }
+
+            /**
+            * Calculates the final grade based on the grades and weights and inputs them into the html interface for display.
+            */
+            static calculate_grade(alert = true) {
+                const weights = WeightUI.compile_weights_from_elements(false, true);
+                const grades = GradesUI.compile_grades_from_elements(weights, false, alert);
+
+                if (grades.length == 0) {
+                    const secondary_grades_container = document.getElementById("secondary-grades-container");
+                    if (alert) { GeneralUI.create_warning_prompt("No valid grades have been found.", secondary_grades_container, -1, false); }
+                }
+
+                const results = GradeCalculate.calculate_grade(grades, weights);
+
+                const final_grade = results[0];
+                const weight_data = results[1];
+
+                const summary = document.getElementById('summary');
+                const weight_scores = summary.querySelector('[id="weight-scores"]');
+
+                CalculationDisplay.display_results(final_grade, weight_data);
+            }
+
+            /**
+            * Determines if a string can be converted to a direct number.
+            * @param {string} str - The string to check if it can be converted to a number.
+            * 
+            * @returns {boolean} True if the string can be converted to a number, false otherwise.
+            */
+            static isNumeric(str) {
+                const num = Number(str);
+                return !isNaN(num) && str.trim() !== '';
+            }
+
+            /**
+            * Generates a uuid v4 identifier.
+            * 
+            * @returns {string} uuid v4 identifier.
+            */
+            static generate_uuid_v4() {
+                return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                    var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
+            }
+
+
+            static get_decimal_places(num) {
+                    const decimalPart = num.toString().split('.')[1];
+                    
+                    // Check for repeating decimals
+                    if (decimalPart) {
+                        // For the purpose of demonstration, limit the check to the first 20 digits
+                        const limitedDecimal = decimalPart.slice(0, 20);
+                        return limitedDecimal.length; // Adjust based on your needs
+                    }
+                    
+                    return 0;
+                }
+        }
+
+
+        class CalculationDisplay {
+            static display_results(final_grade = 0, weight_data) {
+                const weight_scores = document.getElementById('weight-scores');
+
+                //Clear display
+                while (weight_scores.firstChild) {
+                    weight_scores.removeChild(weight_scores.firstChild);
+                }
+
+                // Display weight scores
+                for (let [key, [grade, min, max]] of Object.entries(weight_data)) {
+                    const weight_score = document.createElement('h4');
+
+                    min = Calculate.get_decimal_places(min) > 4 ? min.toFixed(4) : min;
+                    max = Calculate.get_decimal_places(max) > 4 ? max.toFixed(4) : max;
+                    grade = Calculate.get_decimal_places(grade) > 3 ? grade.toFixed(3) : grade;
+                    weight_score.innerText = `${key}: ${min} / ${max} (${grade}%)`;
+                    
+                    weight_scores.appendChild(weight_score);
+                }
+
+                // Display final grade
+                const final_grade_display = summary.querySelector('[id="final-grade"]');
+                if (Calculate.isNumeric(final_grade.toString()) == true) {
+                    final_grade_display.innerText = `Final Grade: ${parseInt(Math.round(final_grade))}% (${final_grade.toFixed(2)}%)`;
+                }
+                else
+                {
+                    final_grade_display.innerText = "Final Grade: None";
+                }                
+            }
+        }
+
+
+        class GeneralUI {
+            /**
+             * Creates a warning prompt with the specified message.
+             * 
+             * @param {string} message - The message to display in the warning prompt.
+             * @param {HTMLElement} parent - The parent element to append the warning prompt to.
+             * @param {number} [insert_at_index=-1] - The optional index to insert the warning prompt at.
+             * @param {boolean} [post_unique=false] - The optional flag indicating that it will not post the same warning prompt if it is already present within anywhere in the parent.
+             * @returns {void}
+             */
+            static create_prompt(message, parent, insert_at_index, post_unique, hex_color) {
+                if (!parent) {
+                    console.error('Parent element not found.');
+                    return;
+                }
+                if (post_unique == true) {
+                    if (parent.querySelector('[id="advisery-msg"]')) {
+                        const local_prompt_elements = parent.querySelectorAll('[id="advisery-msg"]');
+                        let found = false;
+                        for (let [_, value] of Object.entries(local_prompt_elements)) {
+                            const warning_text = value.querySelector('p').innerHTML;
+                            if (warning_text == message) { found = true; break; }
+                        }
+                        if (found) { return; }
+                    }
+                }
+                
+                // Create the warning prompt element
+                const new_prompt = document.createElement('div');
+                new_prompt.className = 'advisery-prompt'; new_prompt.id = 'advisery-msg';
+                new_prompt.style.backgroundColor = hex_color;
+                new_prompt.innerHTML = `<p>${message}</p>`;
+                new_prompt.style.animation = 'advisery-prompt-fade-in 0.7s ease-in-out'
+
+                // Create a button element
+                const closeButton = document.createElement('button');
+
+                const close_button_texts = [
+                    "Got it!", "Alright!", "Yes, I understand!", "Go away!", "SHUT!", "Close", "Understood!", "Okay!", "Fine!", "I get it!", "I see!", 
+                    "I know!", "I'm aware!", "I'm informed!", "I'm conscious!", "I'm apprehensive!", "I'm perceptive!", "I'm observant!", "I'm enlightened.",
+                    "I'm wise!", "Goodbye.", "Be gone!", "See you later aligator!", "In a while crocodile!", "Goodbye, goofball!", "So long, scallywag!"
+                    ];
+
+                const random_index = Math.floor(Math.random() * close_button_texts.length);
+                closeButton.innerHTML = close_button_texts[random_index];
+                closeButton.className = 'advisery-close-btn';
+
+                new_prompt.appendChild(closeButton);
+                if (insert_at_index >= 0) {
+                    parent.insertBefore(new_prompt, parent.children[insert_at_index]);
+                } else {
+                    parent.appendChild(new_prompt);
+                }
+                
+                // Add an event listener to the close button
+                closeButton.addEventListener('click', function() {
+                    this.parentElement.remove();
+                });
+            }
+
+
+            static create_warning_prompt(message, parent, insert_at_index = -1, post_unique = false) {
+                GeneralUI.create_prompt(message, parent, insert_at_index, post_unique, '#85551a3f');
+            }
+
+
+            static create_info_prompt(message, parent, insert_at_index = -1, post_unique = false) {
+                GeneralUI.create_prompt(message, parent, insert_at_index, post_unique, '#0871c73f');
+            }
+            
+
+            static execute_confirmation_text_paste_control(event, input_element, pasting_enabled) {
+                if (input_element == null) {
+                    console.error("No input element provided.");
+                    return;
+                }
+                if (pasting_enabled == null) {
+                    console.error("No pasting enabled value!");
+                    return;
+                }
+                
+                if (pasting_enabled == false) {
+                    const super_parent = input_element.parentElement.parentElement;
+                    const no_paste = super_parent.querySelector('p[id="no-paste"]');
+                    no_paste.style.display = "block";
+                }
+            }
+
+            static async create_get_text_alert(message, no_paste) {
+                try {
+                    var confirmation_alert = document.createElement('div'); // Referenced out of scope!
+                    confirmation_alert.className = 'get-text-alert';
+                    const cancel_pasting = no_paste ? 'onpaste="GeneralUI.execute_confirmation_text_paste_control(event, this, false); return false;"' : '';
+                    confirmation_alert.innerHTML = `
+                        <button class="close-btn">x</button>
+                        <h2>Confirmation</h2>
+                        <p style="margin-bottom: 0px;">${message}</p>
+                        <p id="no-paste" style="display: none; margin-top: 2px;">Somebody didn't read the directions. <u>Type it...</u></p>
+                        <div class="input-row" style="margin-top: 10px;">
+                            <input type="text" id="confirm-text" placeholder="Enter text here..." ${cancel_pasting}>
+                            <button class="default-btn" id="confirm-btn">Enter</button>
+                        </div>
+                    `;
+                    document.body.appendChild(confirmation_alert);
+                    GeneralUI.enable_interface(false);
+                } catch (e) {
+                    console.error('Failed to create confirmation alert: ', e);
+                    alert('Failed to create confirmation alert.');
+                } 
+            }
+
+
+            static async create_confirmation_alert(message) {
+                //Initialize and deploy the alert
+                try {
+                    var confirmation_alert = document.createElement('div');
+                    confirmation_alert.className = 'confirmation-alert';
+                    confirmation_alert.innerHTML = `
+                        <button class="close-btn">x</button>
+                        <h2>Confirmation</h2>
+                        <p>${message}</p>
+                        <div class="input-row">
+                            <button class="default-btn" id="confirm-yes-btn">Yes</button>
+                            <button class="default-btn" id="confirm-no-btn">No</button>
+                        </div>
+                    `;
+                    document.body.appendChild(confirmation_alert);
+                    GeneralUI.enable_interface(false);
+                    
+                } catch (e) {
+                    console.error('Failed to create confirmation alert: ', e);
+                    alert('Failed to create confirmation alert.');
+                } 
+            }
+
+
+            static async force_get_user_input(message, type, no_paste=false, executable_function=null, close_returns_null=false) {
+                return new Promise((resolve, reject) => {
+                    let confirmation = null;
+                    let alert_element = null;
+                    if (type == "confirmation") {
+                        GeneralUI.create_confirmation_alert(message);
+                        alert_element = document.getElementsByClassName('confirmation-alert')[0];
+                        const confirm_yes_btn = alert_element.querySelector('button[id="confirm-yes-btn"]');
+                        const confirm_no_btn = alert_element.querySelector('button[id="confirm-no-btn"]');
+
+                        confirm_yes_btn.addEventListener('click', () => {
+                            confirmation = true;
+                            resolve(confirmation);
+                            cleanup();
+                        });
+
+                        confirm_no_btn.addEventListener('click', () => {
+                            confirmation = false;
+                            resolve(confirmation);
+                            cleanup();
+                        });
+
+                        const close_btn = alert_element.querySelector('button[class="close-btn"]');
+                        close_btn.addEventListener('click', () => {
+                            confirmation = (close_returns_null ? null : false);
+                            resolve(confirmation);
+                            cleanup();
+                        });
+
+                        if (executable_function != null) {
+                            executable_function(alert_element);
+                        }
+                    }
+                    else if (type == "get-text") {
+                        GeneralUI.create_get_text_alert(message, no_paste);
+                        alert_element = document.getElementsByClassName('get-text-alert')[0];
+                        const confirm_text_btn = alert_element.querySelector('button[id="confirm-btn"]');
+                        const confirm_text_input = alert_element.querySelector('input[id="confirm-text"]');
+
+                        confirm_text_btn.addEventListener('click', () => {
+                            const text = confirm_text_input.value;
+                            resolve(text);
+                            cleanup();
+                        });
+
+                        const close_btn = alert_element.querySelector('button[class="close-btn"]');
+                        close_btn.addEventListener('click', () => {
+                            resolve(null);
+                            cleanup();
+                        });
+
+                        if (executable_function != null) {
+                            executable_function(alert_element);
+                        }
+                    }
+                    else {
+                        console.error("Invalid type for force_get_user_input.");
+                        reject("Invalid type for force_get_user_input.");
+                    }
+                    
+                    function cleanup() {
+                        alert_element.remove();
+                        GeneralUI.enable_interface(true);
+                    }
+                });
+            }
+
+
+            /**
+             * When enabled is false, the interface (besides confirmation alerts are disabled from being interacted with (scripts still run as normal).) 
+             */
+             static enable_interface(enabled) {
+                const menu = document.getElementsByClassName('menu')[0];
+                const container = document.getElementById('main-container');
+                for (let element of [menu, container]) {
+
+                    if (enabled) {
+                        element.classList.remove('disabled');
+                    } else {
+                        // Disable UI
+                        element.classList.add('disabled');
+                    }                    
+
+                    // For form elements inside these containers, you need to explicitly disable them.
+                    const formElements = element.querySelectorAll('input, button, select, textarea');
+                    formElements.forEach(formElement => {
+                        if (enabled == false) {
+                            // Disable Element
+                            if (formElement.disabled == true) {
+                                formElement.setAttribute('prev_disabled', 'true');
+                            }
+                            formElement.disabled = true;
+                        }
+                        else
+                        {
+                            // Enable Element
+                            if (formElement.getAttribute('prev_disabled') == 'true') {
+                                formElement.removeAttribute('prev_disabled');
+                                GeneralUI.disable_element(formElement, true);
+                            }
+                            else {
+                                GeneralUI.disable_element(formElement, false);
+                            }
+                        }
+                    });
+                }
+
+                // Enable/Disable the tab elements
+                const tabs = document.getElementsByClassName('tablink');
+                for (let tab of tabs) {
+                    if (tab.style.color == "var(--text-color-2)") {
+                        continue;
+                    }
+                    GeneralUI.disable_element(tab, !enabled);
+                }
+            }
+
+            static scroll_element_to_middle_of_screen(element) {
+                const elementRect = element.getBoundingClientRect();
+                const absoluteElementTop = elementRect.top + window.pageYOffset;
+                const middleOfScreen = window.innerHeight / 2;
+                const elementMiddle = elementRect.height / 2;
+                const scrollTo = absoluteElementTop - middleOfScreen + elementMiddle;
+
+                window.scrollTo({ top: scrollTo, behavior: 'smooth' });
+            }
+
+            static clear_prompts() {
+                // Clear All Info Prompts
+                for (let prompts of [document.getElementById('weight-categories-section'), document.getElementById('paste-grades-section'), document.getElementById('input-grades-section'), document.getElementById('final-results-section')]) {
+                    if (prompts == null) {
+                        continue;
+                    }
+                    for (let prompt of prompts.querySelectorAll('div[id="advisery-msg"]')) {
+                        prompt.remove();
+                    }
+                }
+            }
+
+            static disable_buttons(disable) {
+                // Make all buttons in the session rows unclickable
+                const buttons = document.body.querySelectorAll('button');
+                if (disable) {
+                    for (let button of buttons) {
+                        if (button.style.pointerEvents == "none" ||  (button.style.classList && button.style.classList.contains("disabled")))
+                        { 
+                            button.setAttribute('dont-enable', 'true');
+                            continue;
+                        }
+                        GeneralUI.disable_element(button, true);
+                    }
+                }
+                else
+                {
+                    for (let button of buttons) {
+                        if (button.getAttribute('dont-enable')) 
+                        { 
+                            button.removeAttribute('dont-enable');
+                            continue;
+                        }
+                        GeneralUI.disable_element(button, false);
+                    }
+                }
+            }
+
+            static disable_element(element, disable) {
+                element.style.pointerEvents = disable ? "none" : "auto";
+                element.disabled = disable
+            }
+        }
+    </script>
+</body>
+</html>
